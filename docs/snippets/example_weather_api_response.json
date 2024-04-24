@@ -1,0 +1,21 @@
+{
+  "latitude": 42.917397,
+  "longitude": -74.37686,
+  "generationtime_ms": 3.921985626220703,
+  "utc_offset_seconds": 0,
+  "timezone": "GMT",
+  "timezone_abbreviation": "GMT",
+  "elevation": 117.0,
+  "daily_units": {
+    "time": "iso8601",
+    "rain_sum": "mm"
+  },
+  "daily": {
+    "time": [
+      "2024-02-28"
+    ],
+    "rain_sum": [
+      9.90
+    ]
+  }
+}

@@ -1,0 +1,41 @@
+/* turn social links into a column instead of row */
+.md-social {
+  display: flex;
+  flex-direction: column;
+  width: 10rem;
+}
+
+/* remove the fixed width for a social link to have space for text */
+.md-social__link {
+  width: unset;
+  font-size: .64rem;
+}
+
+/* social link text padding and margin */
+.md-social__link > span > p {
+  padding: 0;
+  margin: 0 0.45rem 0 0;
+}
+
+/* align social link text and icon */
+.md-social_link-line {
+  display: flex;
+  justify-content: start;
+  align-items: center;
+  vertical-align: middle;
+}
+
+/* make the navigation sidebar smaller, keep the same size for Table of Contents sidebar */
+.md-sidebar[data-md-type="navigation"] {
+  width: 8rem;
+}
+
+/* make the main content grid wider */
+.md-grid {
+  max-width: max(70rem, 86vw);
+}
+
+/* disable word break for code */
+.md-typeset code {
+  word-break: normal;
+}
