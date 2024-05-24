@@ -1,6 +1,6 @@
 # Go API
 
-[JS SDK :fontawesome-brands-github:]({{ variables.links.go_sdk_repo }})
+[Go SDK :fontawesome-brands-github:]({{ variables.links.go_sdk_repo }})
 
 <details><summary>Example</summary>
 <p>
@@ -9,20 +9,18 @@
 
 ```go
 // First, we configure the client
-transport := &http.Transport{}
-transport.TLSClientConfig = &tls.Config{
-	InsecureSkipVerify: true,
-}
-
 config := &ClientConfig{
 	NotarizerConfig: &CustomBackendConfig{
-		URL: "https://51.89.97.117:9080",
+		Address: "sgx.aleooracle.xyz",
+		HTTPS:   true,
+		Resolve: true,
 	},
 	VerifierConfig: &CustomBackendConfig{
-		URL: "http://51.89.97.117:9081",
+		Address: "verifier.aleooracle.xyz",
+		HTTPS:   true,
+		Resolve: false,
 	},
-	Logger:    log.Default(),
-	Transport: transport,
+	Logger: log.Default(),
 }
 
 // Create a client
@@ -32,7 +30,7 @@ if err != nil {
 }
 
 // Fetch enclave info for all attesters
-infoList, errList := client.GetEnclavesInfo(&EnclaveInfoOptions{context.Background()})
+infoList, errList := client.GetEnclavesInfo(nil)
 if errList != nil {
 	log.Fatalln(errList)
 }
@@ -56,7 +54,7 @@ req := &AttestationRequest{
 }
 
 // Use TestSelector in development if you need to figure out what kind of response you're getting from the attestation target
-responses, errList := client.TestSelector(req, &TestSelectorOptions{Context: context.Background()})
+responses, errList := client.TestSelector(req, nil)
 if errList != nil {
 	log.Fatalln(errList)
 }
@@ -131,12 +129,42 @@ log.Println()
 const (
     // Request timeout used by default for Client's methods
     DEFAULT_TIMEOUT = 5 * time.Second
+)
+```
 
+<a name="REPORT_TYPE_SGX"></a>
+
+```go
+const (
     REPORT_TYPE_SGX = "sgx"
 )
 ```
 
 ## Variables
+
+<a name="DEFAULT_NOTARIZATION_BACKENDS"></a>
+
+```go
+var (
+    DEFAULT_NOTARIZATION_BACKENDS = []*CustomBackendConfig{
+        &CustomBackendConfig{
+            Address:   "sgx.aleooracle.xyz",
+            Port:      443,
+            HTTPS:     true,
+            ApiPrefix: "",
+            Resolve:   true,
+        },
+    }
+
+    DEFAULT_VERIFICATION_BACKEND = &CustomBackendConfig{
+        Address:   "verifier.aleooracle.xyz",
+        Port:      443,
+        HTTPS:     true,
+        ApiPrefix: "",
+        Resolve:   true,
+    }
+)
+```
 
 <a name="DEFAULT_NOTARIZATION_HEADERS"></a>
 
@@ -208,7 +236,7 @@ type AttestationRequest struct {
     // Optional dictionary of HTTP headers to add to the request to attestation target.
     //
     // Value of headers which might contain sensitive information (like "Authorization", "X-Auth-Token" or "Cookie")
-    // and any non-standard headers used by attestation target would be replaced with "*****" in attestation report.
+    // and any non-standard headers used by attestation target will be replaced with "*****" in attestation report.
     //
     // This SDK will use some default request headers like User-Agent. See DEFAULT_NOTARIZATION_HEADERS.
     //
@@ -346,8 +374,32 @@ CustomBackendConfig is a configuration object for using custom notarizer or veri
 
 ```go
 type CustomBackendConfig struct {
-    // Base URL of the backend, e.g. https://backend.example.com:8080.
-    URL string
+    /**
+    * Domain name or IP address of the backend
+     */
+    Address string
+
+    /**
+    * The port that the backend listens on for the API requests
+     */
+    Port uint16
+
+    /**
+    * Whether the client should use HTTPS to connect to the backend
+     */
+    HTTPS bool
+
+    /**
+    * Whether the client should resolve the backend (when it's a domain name).
+    * If the domain name is resolved to more than one IP, then the requests will be
+    * sent to all of the resolved servers, and the first response will be used.
+     */
+    Resolve bool
+
+    /**
+    * Optional API prefix to use before the API endpoints
+     */
+    ApiPrefix string
 }
 ```
 

@@ -1,9 +1,9 @@
 # Aleo Oracle documentation website
 
+This repository contains the source code for the https://docs.aleooracle.xyz website.
+
+## Building
+
 1. `pip3 install -r requirements.txt`
-2. Serve locally with `mkdocs serve`
+2. Serve locally with `mkdocs serve` or
 3. Build with `mkdocs build`
-
-The Go SDK was generated from oracle-sdk-go using https://github.com/princjef/gomarkdoc.
-
-The JS SDK was not generated, instead it just follows the layout of the generated Go doc.

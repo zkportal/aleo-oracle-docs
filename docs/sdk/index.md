@@ -39,7 +39,7 @@ Return:
     ```js linenums="1"
     const { OracleClient } = require('@zkportal/aleo-oracle-sdk');
 
-    const client = new OracleClient();
+    const client = new OracleClient(); // will use default notarizer and verifier
     ```
 
 === "JS (client options)"
@@ -49,10 +49,16 @@ Return:
 
     const client = new OracleClient({
       notarizer: {
-        url: "http://localhost:8080"
+        address: "localhost",
+        port: 8080,
+        https: false,
+        resolve: false,
       },
       verifier: {
-        url: "http://localhost:8081"
+        address: "localhost",
+        port: 8081,
+        https: false,
+        resolve: false,
       },
     });
     ```
@@ -63,7 +69,7 @@ Return:
     import oracle "github.com/zkportal/aleo-oracle-sdk-go"
 
     func main() {
-      client, err := oracle.NewClient()
+      client, err := oracle.NewClient() // will use default notarizer and verifier
       if err != nil {
         panic(err)
       }
@@ -78,10 +84,16 @@ Return:
     func main() {
       client, err := oracle.NewClient(&oracle.ClientConfig{
         NotarizerConfig: &oracle.CustomBackendConfig{
-          URL: "http://localhost:8080",
+          Address: "localhost",
+          Port: 8080,
+          HTTPS: false,
+          Resolve: false,
         },
         VerifierConfig: &oracle.CustomBackendConfig{
-          URL: "http://localhost:8081",
+          Address: "localhost",
+          Port: 8081,
+          HTTPS: false,
+          Resolve: false,
         },
       })
 

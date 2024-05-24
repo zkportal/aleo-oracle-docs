@@ -115,4 +115,4 @@ to verify someone else's reports/data.
 
 ## Oracle program
 
-An Aleo program that is capable of accepting Oracle attestation reports and attested data.
+An Aleo program that is capable of accepting Oracle attestation reports and attested data. See more information about how it works in the [Guide about the oracle program](../guide/oracle_program.md).
