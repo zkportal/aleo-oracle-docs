@@ -1,8 +1,10 @@
 # JS API
 
+The Aleo Oracle SDK for JavaScript is a Node.js package.
+
 [JS SDK :fontawesome-brands-github:]({{ variables.links.js_sdk_repo }})
 
-This API doesn't use default exports.
+This SDK doesn't use default exports.
 
 Internally, this API uses [Fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API). It may be possible to use it in any JS environment,
 given that you provide an implementation for the Fetch API.
@@ -15,8 +17,10 @@ an override for Fetch options that are used for communicating with those backend
 - [Installation](#installation)
 - [Constants](#constants):
     - [`DEFAULT_FETCH_OPTIONS`](#default_fetch_options)
+    - [`DEFAULT_NOTARIZATION_BACKENDS`](#default_notarization_backends)
     - [`DEFAULT_NOTARIZATION_HEADERS`](#default_notarization_headers)
     - [`DEFAULT_NOTARIZATION_OPTIONS`](#default_notarization_options)
+    - [`DEFAULT_VERIFICATION_BACKEND`](#default_verification_backend)
 - [Types](#types):
     - [class `AttestationError`](#class-attestationerror)
     - [class `AttestationIntegrityError`](#class-attestationintegrityerror)
@@ -39,7 +43,7 @@ an override for Fetch options that are used for communicating with those backend
     - [type `OracleData`](#type-oracledata)
     - [type `PositionInfo`](#type-positioninfo)
     - [type `ProofPositionalInfo`](#type-proofpositionalinfo)
-    - [type `sgxInfo`](#type-sgxinfo)
+    - [type `SgxInfo`](#type-sgxinfo)
 
 ## Installation
 
@@ -59,6 +63,25 @@ Default Fetch API options that are applied to all requests towards the Notarizat
   referrer: '',
   keepalive: false,
 }
+```
+
+### `DEFAULT_NOTARIZATION_BACKENDS`
+
+List of notarization backend configurations that is going to be used if no `notarizer` configuration is provided to the client.
+
+Type: [`CustomBackendConfig[]`](#type-custombackendconfig).
+
+```js
+[
+  {
+    address: 'sgx.aleooracle.xyz',
+    port: 443,
+    https: true,
+    apiPrefix: '',
+    resolve: true,
+    init: DEFAULT_FETCH_OPTIONS,
+  },
+]
 ```
 
 ### `DEFAULT_NOTARIZATION_HEADERS`
@@ -86,6 +109,23 @@ Type: [`NotarizationOptions`](#type-notarizationoptions)
 }
 ```
 
+### `DEFAULT_VERIFICATION_BACKEND`
+
+List of notarization backend configurations that is going to be used if no `verifier` configuration is provided to the client.
+
+Type: [`CustomBackendConfig`](#type-custombackendconfig).
+
+```js
+{
+  address: 'verifier.aleooracle.xyz',
+  port: 443,
+  https: true,
+  apiPrefix: '',
+  resolve: true,
+  init: DEFAULT_FETCH_OPTIONS,
+}
+```
+
 ## Types
 
 ### class `AttestationError`
@@ -95,6 +135,7 @@ Extends: `Error`
 | Property | Type | Description |
 | --- | --- | --- |
 | `errorDetails` | `string | undefined` | Extra error details |
+| `responseStatusCode` | `number | undefined` | Attestation target's response status code, which will be present if the error has occurred during or after performing a request to the target |
 
 ### class `AttestationIntegrityError`
 
@@ -106,6 +147,8 @@ Extends: `Error`
 
 | Property | Type | Description |
 | --- | --- | --- |
+| `errorDetails` | `string | undefined` | Extra error details |
+| `responseStatusCode` | `number | undefined` | Attestation target's response status code, which will be present if the error has occurred during or after performing a request to the target |
 | `responseBody` | `string` | Full response body received in the attestation target's response. |
 | `extractedData` | `string` | Extracted data from `responseBody` using the provided selector. |
 
@@ -224,7 +267,11 @@ Configuration for a backend that Oracle client will be using for notarization/ve
 
 | Property | Type | Description |
 | --- | --- | --- |
-| `url` | `string` | Custom backend URL |
+| `address` | `string` | Domain name or IP address of the backend |
+| `port` | `number` | The port that the backend listens on for the API requests |
+| `https` | `boolean` | Whether the client should use HTTPS to connect to the backend |
+| `apiPrefix` | `string | undefined` | Optional API prefix to prepend to the API endpoints |
+| `resolve` | `boolean` | Whether the client should resolve the backend (when it's a domain name). If the domain name is resolved to more than one IP, then the requests will be sent to all of the resolved servers, and the first response will be used. Must use with the default backends. |
 | `init` | <code>[CustomBackendAllowedFetchOptions](#type-custombackendallowedfetchoptions) \| undefined</code> | Custom Fetch API options for requests towards this backend. If not provided, will use [`DEFAULT_FETCH_OPTIONS`](#default_fetch_options). |
 
 ### type `DebugRequestResponse`
@@ -245,7 +292,7 @@ Information about the TEE the Notarization Backend is running in.
 | --- | --- | --- |
 | `enclaveUrl` | `string` | URL of the Notarization Backend the report came from. |
 | `reportType` | `string` | Which TEE technology produces the attestation report within this response. |
-| `info` | [`sgxInfo`](#type-sgxinfo) | Information about the TEE. |
+| `info` | [`SgxInfo`](#type-sgxinfo) | Information about the TEE. |
 | `signerPubKey` | `string` | Public key of the report signing key that was generated in the enclave. |
 
 ### type `EncodingOptions`
@@ -322,7 +369,7 @@ See the [encoding documentation](../guide/aleo_encoding.md).
 | `requestHeaders` | [`PositionInfo`](#type-positioninfo) | Position and length of <code>[AttestationResponse](#type-attestationresponse).[attestationRequest](#type-attestationrequest).requestHeaders</code>. |
 | `optionalFields` | [`PositionInfo`](#type-positioninfo) | Position and length of `htmlResultType`, `requestBody`, and `requestContentType` in <code>[AttestationResponse](#type-attestationresponse).[attestationRequest](#type-attestationrequest)</code>. |
 
-### type `sgxInfo`
+### type `SgxInfo`
 
 Information about Intel SGX enclave a Notarization Backend is running in. Includes some extra properties that are encoded for use in Aleo programs for convenience.
 

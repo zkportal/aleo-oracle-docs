@@ -287,8 +287,6 @@ Extracted data have more digits in the fractional part than the provided precisi
 
 Notarization Backend can only encode positive numbers. Please make sure that the Extracted Data contain a positive number.
 
-####
-
 ### Internal Errors
 
-Errors with codes 1-4, 331, 332, 333, 1000, 1007, and 1008 mean that there was an internal error related to marshaling or encoding information at some point in the attestation process. These errors should never occure, but in case they did - please contact developers.
+Errors with codes `1` to `4`, `331`, `332`, `333`, `1000`, `1007`, and `1008` mean that there was an internal error related to marshaling or encoding information at some point in the attestation process. These errors should never occure, but in case they did - please contact developers.
