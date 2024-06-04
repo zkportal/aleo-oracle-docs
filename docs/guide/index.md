@@ -34,6 +34,22 @@ For this example we'll use weather data for Amsterdam and put the precipitation 
 
     It is highly recommended to use time insensitive historic data. In case of using live data, other people might see different results when requesting the same url with the same parameters.
 
+### Whitelist
+
+The notarizer maintains a list of hosts that are allowed to be notarizer. You can query the list at `https://sgx.aleooracle.xyz/whitelist`. If you would like to whitelist a host, please contact us.
+
+??? info "Current whitelist"
+
+    This list may be outdated, always query the list from the URL.
+
+    ```json
+    [
+        "testnet.binance.vision",
+        "api.binance.com",
+        "archive-api.open-meteo.com"
+    ]
+    ```
+
 ## Step 2: create an HTTP request to get the data
 
 Now you need to create an HTTP request that results in a response containing the data you want.
