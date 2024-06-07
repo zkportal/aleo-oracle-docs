@@ -36,7 +36,7 @@ For this example we'll use weather data for Amsterdam and put the precipitation 
 
 ### Whitelist
 
-The notarizer maintains a list of hosts that are allowed to be notarizer. You can query the list at `https://sgx.aleooracle.xyz/whitelist`. If you would like to whitelist a host, please contact us.
+The notarizer maintains a list of hosts that are allowed to be notarized. You can query the list at `https://sgx.aleooracle.xyz/whitelist`. If you would like to whitelist a host, please contact us.
 
 ??? info "Current whitelist"
 
@@ -44,9 +44,35 @@ The notarizer maintains a list of hosts that are allowed to be notarizer. You ca
 
     ```json
     [
+        "google.com",
+        "api-testnet.bybit.com",
+        "verifier.aleooracle.xyz",
+        "api.bitfinex.com",
+        "api.coinbasecloud.net",
+        "api-pub.bitfinex.com",
+        "sgx.aleooracle.xyz",
+        "api.international.coinbase.com",
+        "api.bybit.com",
+        "www.kraken.com",
+        "pro-api.coinmarketcap.com",
+        "docs.aleooracle.xyz",
+        "api.exchange.coinbase.com",
+        "www.okx.com",
+        "data-api.binance.vision",
         "testnet.binance.vision",
+        "www.coinbase.com",
+        "api.kraken.com",
+        "archive-api.open-meteo.com",
+        "public.bybit.com",
+        "api.prime.coinbase.com",
+        "www.bitstamp.net",
+        "www.bitfinex.com",
+        "api.kucoin.com",
+        "www.kucoin.com",
         "api.binance.com",
-        "archive-api.open-meteo.com"
+        "api-futures.kucoin.com",
+        "iapi.kraken.com",
+        "www.bybit.com"
     ]
     ```
 

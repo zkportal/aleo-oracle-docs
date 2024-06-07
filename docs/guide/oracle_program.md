@@ -4,9 +4,43 @@ The Aleo Oracle program is designed to store information provided by the Attesta
 
 This page explains in details the source code of the Aleo Oracle and how to use it.
 
+## Setting up local oracle for testing
+
+If you want to test your integration locally without interacting with live network you can use you locally setup network and deploy your own oracle using source code bellow.
+
+Requirements:
+
+  - [SnarkOS](https://github.com/AleoNet/snarkOS)
+
+Steps to run local network:
+
+- Start 4 instances of validator node to start mining blocks locally. Open 4 terminals and run this command:
+```
+snarkos start --nodisplay --dev 0 --validator
+```
+
+For every validator increace `--dev` by 1
+
+- Change `owner` address in oracle source code to address provided by the 1st instance of validator node when you started it.
+- Deploy oracle contract to the local network:
+```
+snarkos developer deploy official_oracle.aleo --private-key <privateKey> --query "http://0.0.0.0:3030" --path "./" --broadcast "http://0.0.0.0:3030/mainnet/transaction/broadcast" --priority-fee 0
+```
+
+    Where `privateKey` is the key provided when you started the 1st instance of validator node
+
+- Update oracle with `unique_id` and `public_key`. You can get `unique_id` and `public_key` by requesting `/info` endpoint of the [Oracle Notarization backend](https://sgx.aleooracle.xyz/info)
+```
+snarkos developer execute official_oracle.aleo set_key <signerPubKey> --private-key <privateKey> --query "http://0.0.0.0:3030" --broadcast "http://0.0.0.0:3030/mainnet/transaction/broadcast"
+
+snarkos developer execute official_oracle.aleo set_unique_id <unique_id_1> <unique_id_2> --private-key <privateKey> --query "http://0.0.0.0:3030" --broadcast "http://0.0.0.0:3030/mainnet/transaction/broadcast"
+```
+
+- Oracle is set and ready to be used.
+
 ## Aleo Oracle source code
 
-You can find this program deployed in the [Aleo Explorer](https://explorer.aleo.org/program/aleo_oracle.aleo) or [Aleo Info](https://aleo.info/program/aleo_oracle.aleo).
+You can find this program deployed in the [Aleo Explorer](https://explorer.aleo.org/program/official_oracle.aleo) or [Aleo Info](https://aleo.info/program/official_oracle.aleo).
 
 Here is the source code of the Aleo Oracle in both Leo and compiled to Aleo versions:
 
@@ -15,7 +49,7 @@ Here is the source code of the Aleo Oracle in both Leo and compiled to Aleo vers
     === "Leo"
 
         ```leo linenums="1"
-        program aleo_oracle.aleo {
+        program official_oracle.aleo {
           // mapping with 32byte enclave unique_id
           // split in 2 16byte u128 chunks with keys 1u8 and 2u8
           mapping unique_id: u8 => u128;
@@ -252,7 +286,7 @@ Here is the source code of the Aleo Oracle in both Leo and compiled to Aleo vers
     === "Aleo"
 
         ```aleo linenums="1"
-        program aleo_oracle.aleo;
+        program official_oracle.aleo;
 
         struct DataChunk:
             f0 as u128;
@@ -355,7 +389,7 @@ Here is the source code of the Aleo Oracle in both Leo and compiled to Aleo vers
             input r0 as address.public;
             assert.eq aleo1urxgwwfph8243x68r2sh772vl55ln0cvzvru4j9nm9er7x40lgyqkrthfe self.caller;
             async set_key r0 into r1;
-            output r1 as aleo_oracle.aleo/set_key.future;
+            output r1 as official_oracle.aleo/set_key.future;
 
         finalize set_key:
             input r0 as address.public;
@@ -369,7 +403,7 @@ Here is the source code of the Aleo Oracle in both Leo and compiled to Aleo vers
             input r1 as u128.public;
             assert.eq aleo1urxgwwfph8243x68r2sh772vl55ln0cvzvru4j9nm9er7x40lgyqkrthfe self.caller;
             async set_unique_id r0 r1 into r2;
-            output r2 as aleo_oracle.aleo/set_unique_id.future;
+            output r2 as official_oracle.aleo/set_unique_id.future;
 
         finalize set_unique_id:
             input r0 as u128.public;
@@ -389,7 +423,7 @@ Here is the source code of the Aleo Oracle in both Leo and compiled to Aleo vers
             cast r5 r0.c1 r0.c2 r0.c3 r0.c4 r0.c5 r0.c6 r0.c7 into r6 as ReportData;
             hash.psd8 r6 into r7 as u128;
             async set_data r7 r0.c0.f2 r0.c0.f3 r3 r1.c0.f8 r1.c0.f9 into r8;
-            output r8 as aleo_oracle.aleo/set_data.future;
+            output r8 as official_oracle.aleo/set_data.future;
 
         finalize set_data:
             input r0 as u128.public;
@@ -527,7 +561,7 @@ You can also run the Oracle Notarization backend yourself using reproducible bui
           input r0 as address.public;
           assert.eq aleo1urxgwwfph8243x68r2sh772vl55ln0cvzvru4j9nm9er7x40lgyqkrthfe self.caller;
           async set_key r0 into r1;
-          output r1 as aleo_oracle.aleo/set_key.future;
+          output r1 as official_oracle.aleo/set_key.future;
 
         finalize set_key:
           input r0 as address.public;
@@ -569,7 +603,7 @@ This function is used by the owner of the program to add or remove allowed publi
             input r1 as u128.public;
             assert.eq aleo1urxgwwfph8243x68r2sh772vl55ln0cvzvru4j9nm9er7x40lgyqkrthfe self.caller;
             async set_unique_id r0 r1 into r2;
-            output r2 as aleo_oracle.aleo/set_unique_id.future;
+            output r2 as official_oracle.aleo/set_unique_id.future;
 
         finalize set_unique_id:
             input r0 as u128.public;
@@ -764,7 +798,7 @@ This function is used to verify that the provided `report` is valid. As a first 
           cast r5 r0.c1 r0.c2 r0.c3 r0.c4 r0.c5 r0.c6 r0.c7 into r6 as ReportData;
           hash.psd8 r6 into r7 as u128;
           async set_data r7 r0.c0.f2 r0.c0.f3 r3 r1.c0.f8 r1.c0.f9 into r8;
-          output r8 as aleo_oracle.aleo/set_data.future;
+          output r8 as official_oracle.aleo/set_data.future;
 
         finalize set_data:
           input r0 as u128.public;
@@ -801,7 +835,7 @@ If you want to use the values outside of the Aleo blockchain then you can simply
 !!! example "Queriyng the Aleo Oracle"
 
     ```
-    curl https://api.explorer.aleo.org/v1/testnet3/program/aleo_oracle.aleo/mapping/attested_data/{request_hash}
+    curl https://api.explorer.aleo.org/v1/testnet/program/official_oracle.aleo/mapping/attested_data/{request_hash}
     ```
 
     Where `request_hash` is a [Hash](./understanding_response.md/#about-request-hash) of the Request that was used to get data (with zeroed Data and Timestamp to make it static).
@@ -810,7 +844,7 @@ To use Aleo Oracle in your Aleo program you need to import the Oracle program fi
 
 !!! example "Queriyng the Aleo Oracle from Aleo program"
 
-    Example of a simple program that will transfer an attested amount of some [token](https://github.com/AleoHQ/workshop/tree/master/token).
+    Example of a simple program that will transfer an attested amount of some [token](https://github.com/ProvableHQ/workshop/tree/master/token).
 
     Since you can read mappings only during the `Finalize` stage, in this example we provide the amount as a function parameter to a `Transition` function to use and then verify that the provided value is correct during the `Finalize` step.
 
@@ -818,7 +852,7 @@ To use Aleo Oracle in your Aleo program you need to import the Oracle program fi
 
         ```leo linenums="1"
         // import the Aleo Oracle program
-        import aleo_oracle.leo;
+        import official_oracle.leo;
 
         transition use_oracle(
           public amount: u128,
@@ -843,7 +877,7 @@ To use Aleo Oracle in your Aleo program you need to import the Oracle program fi
     === "Aleo"
 
         ```aleo linenums="1"
-        import aleo_oracle.aleo;
+        import official_oracle.aleo;
 
         function use_oracle:
           input r0 as u128.public;
@@ -854,7 +888,7 @@ To use Aleo Oracle in your Aleo program you need to import the Oracle program fi
 
         finalize use_oracle:
           input r0 as u128.public;
-          get.or_use aleo_oracle.aleo/attested_data[request_hash] 0u128 into r1;
+          get.or_use official_oracle.aleo/attested_data[request_hash] 0u128 into r1;
           assert.eq r0 r1;
         ```
 
@@ -879,7 +913,7 @@ In case you only want to use data that is not older than a certain timestamp you
     === "Aleo"
 
         ```aleo linenums="1"
-        get.or_use aleo_oracle.aleo/last_update_timestamp[request_hash] 0u128 into r0;
+        get.or_use official_oracle.aleo/last_update_timestamp[request_hash] 0u128 into r0;
         gte r0 12345u128 into r1;
         assert.eq r1 true;
         ```
@@ -905,7 +939,7 @@ Aleo Oracle stores all the values as a `u128` numbers. In case you require small
     === "Aleo"
 
         ```aleo linenums="1"
-        get.or_use aleo_oracle.aleo/attested_data[request_hash] 0u128 into r0;
+        get.or_use official_oracle.aleo/attested_data[request_hash] 0u128 into r0;
         cast r0 into r1 as u64;
         cast r0 into r2 as u32;
         ```

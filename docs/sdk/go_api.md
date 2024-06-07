@@ -94,36 +94,33 @@ log.Println()
 
 ## Index
 
-- [Constants](<#constants>)
-- [Variables](<#variables>)
-- [type AttestationRequest](<#AttestationRequest>)
-- [type AttestationResponse](<#AttestationResponse>)
-- [type Client](<#Client>)
-    - [func NewClient\(config \*ClientConfig\) \(\*Client, error\)](<#NewClient>)
-    - [func \(c \*Client\) GetEnclavesInfo\(options \*EnclaveInfoOptions\) \(\[\]\*EnclaveInfo, \[\]error\)](<#Client.GetEnclavesInfo>)
-    - [func \(c \*Client\) Notarize\(req \*AttestationRequest, options \*NotarizationOptions\) \(\[\]\*AttestationResponse, \[\]error\)](<#Client.Notarize>)
-    - [func \(c \*Client\) TestSelector\(req \*AttestationRequest, options \*TestSelectorOptions\) \(\[\]\*TestSelectorResponse, \[\]error\)](<#Client.TestSelector>)
-- [type ClientConfig](<#ClientConfig>)
-- [type CustomBackendConfig](<#CustomBackendConfig>)
-- [type EnclaveInfo](<#EnclaveInfo>)
-    - [func \(e \*EnclaveInfo\) UnmarshalJSON\(b \[\]byte\) error](<#EnclaveInfo.UnmarshalJSON>)
-- [type EnclaveInfoOptions](<#EnclaveInfoOptions>)
-- [type EncodingOptions](<#EncodingOptions>)
-- [type EncodingOptionsValueType](<#EncodingOptionsValueType>)
-- [type HtmlResultType](<#HtmlResultType>)
-- [type NotarizationOptions](<#NotarizationOptions>)
-- [type OracleData](<#OracleData>)
-- [type PositionInfo](<#PositionInfo>)
-- [type ProofPositionalInfo](<#ProofPositionalInfo>)
-- [type ResponseFormat](<#ResponseFormat>)
-- [type SgxInfo](<#SgxInfo>)
-- [type TestSelectorOptions](<#TestSelectorOptions>)
-- [type TestSelectorResponse](<#TestSelectorResponse>)
+- [Constants](#constants)
+- [Variables](#variables)
+- [type AttestationRequest](#type-attestationrequest)
+- [type AttestationResponse](#type-attestationresponse)
+- [type Client](#type-client)
+    - [func NewClient\(config \*ClientConfig\) \(\*Client, error\)](#func-newclient)
+    - [func \(c \*Client\) GetEnclavesInfo\(options \*EnclaveInfoOptions\) \(\[\]\*EnclaveInfo, \[\]error\)](#func-client-getenclavesinfo)
+    - [func \(c \*Client\) Notarize\(req \*AttestationRequest, options \*NotarizationOptions\) \(\[\]\*AttestationResponse, \[\]error\)](#func-client-notarize)
+    - [func \(c \*Client\) TestSelector\(req \*AttestationRequest, options \*TestSelectorOptions\) \(\[\]\*TestSelectorResponse, \[\]error\)](#func-client-testselector)
+- [type ClientConfig](#type-clientconfig)
+- [type CustomBackendConfig](#type-custombackendconfig)
+- [type EnclaveInfo](#type-enclaveinfo)
+- [type EnclaveInfoOptions](#type-enclaveinfooptions)
+- [type EncodingOptions](#type-encodingoptions)
+- [type EncodingOptionsValueType](#type-encodingoptionsvaluetype)
+- [type HtmlResultType](#type-htmlresulttype)
+- [type NotarizationOptions](#type-notarizationoptions)
+- [type OracleData](#type-oracledata)
+- [type PositionInfo](#type-positioninfo)
+- [type ProofPositionalInfo](#type-proofpositionalinfo)
+- [type ResponseFormat](#type-responseformat)
+- [type SgxInfo](#type-sgxinfo)
+- [type TestSelectorOptions](#type-testselectoroptions)
+- [type TestSelectorResponse](#type-testselectorresponse)
 
 
 ## Constants
-
-<a name="DEFAULT_TIMEOUT"></a>
 
 ```go
 const (
@@ -132,8 +129,6 @@ const (
 )
 ```
 
-<a name="REPORT_TYPE_SGX"></a>
-
 ```go
 const (
     REPORT_TYPE_SGX = "sgx"
@@ -141,8 +136,6 @@ const (
 ```
 
 ## Variables
-
-<a name="DEFAULT_NOTARIZATION_BACKENDS"></a>
 
 ```go
 var (
@@ -166,8 +159,6 @@ var (
 )
 ```
 
-<a name="DEFAULT_NOTARIZATION_HEADERS"></a>
-
 ```go
 var (
     // Default headers that will be added to the attestation request.
@@ -180,7 +171,6 @@ var (
 )
 ```
 
-<a name="AttestationRequest"></a>
 ## type AttestationRequest
 
 AttestationRequest contains information about a request to the attestation target, how the attestation target is expected to respond and how to parse its response to extract target data.
@@ -244,7 +234,6 @@ type AttestationRequest struct {
 }
 ```
 
-<a name="AttestationResponse"></a>
 ## type AttestationResponse
 
 AttestationResponse is notarization backend's response to an attestation request
@@ -285,7 +274,6 @@ type AttestationResponse struct {
 }
 ```
 
-<a name="Client"></a>
 ## type Client
 
 Aleo Oracle client.
@@ -296,7 +284,6 @@ type Client struct {
 }
 ```
 
-<a name="NewClient"></a>
 ### func NewClient
 
 ```go
@@ -305,7 +292,6 @@ func NewClient(config *ClientConfig) (*Client, error)
 
 NewClient creates a new client using the provided configuration. Configuration is optional. If configuration is not provided, will use 1 notarizer and a verifier hosted by the developers, no logging, \[http.DefaultTransport\] for transport.
 
-<a name="Client.GetEnclavesInfo"></a>
 ### func \(\*Client\) GetEnclavesInfo
 
 ```go
@@ -318,7 +304,6 @@ Can be used to get such important information as security level or Enclave Uniqu
 
 Options are optional, will use 5\-second timeout context if options are nil.
 
-<a name="Client.Notarize"></a>
 ### func \(\*Client\) Notarize
 
 ```go
@@ -331,7 +316,6 @@ It is highly recommended to use time insensitive historic data for notarization.
 
 Use options to configure attestation. If not provided, will use default options \- 5 sec timeouts, DataShouldMatch, no time deviation checks.
 
-<a name="Client.TestSelector"></a>
 ### func \(\*Client\) TestSelector
 
 ```go
@@ -344,7 +328,6 @@ Notarization Backend will try to request the attestation target and extract data
 
 Options are optional. If nil, will use a 5\-second timeout context.
 
-<a name="ClientConfig"></a>
 ## type ClientConfig
 
 ClientConfig contains client instantiation configuration.
@@ -367,7 +350,6 @@ type ClientConfig struct {
 }
 ```
 
-<a name="CustomBackendConfig"></a>
 ## type CustomBackendConfig
 
 CustomBackendConfig is a configuration object for using custom notarizer or verifier.
@@ -403,7 +385,6 @@ type CustomBackendConfig struct {
 }
 ```
 
-<a name="EnclaveInfo"></a>
 ## type EnclaveInfo
 
 Contains information about the TEE enclave that the Notarization Backend is running in
@@ -429,16 +410,6 @@ type EnclaveInfo struct {
 }
 ```
 
-<a name="EnclaveInfo.UnmarshalJSON"></a>
-### func \(\*EnclaveInfo\) UnmarshalJSON
-
-```go
-func (e *EnclaveInfo) UnmarshalJSON(b []byte) error
-```
-
-
-
-<a name="EnclaveInfoOptions"></a>
 ## type EnclaveInfoOptions
 
 GetEnclavesInfo options.
@@ -450,7 +421,6 @@ type EnclaveInfoOptions struct {
 }
 ```
 
-<a name="EncodingOptions"></a>
 ## type EncodingOptions
 
 EncodingOptions is a type containing information about how Notarization Backend should interpret the Attestation Data to encode it to Aleo format. Data will be encoded to Aleo "u128" to allow for usage inside of Aleo programs.
@@ -481,7 +451,6 @@ type EncodingOptions struct {
 }
 ```
 
-<a name="EncodingOptionsValueType"></a>
 ## type EncodingOptionsValueType
 
 The expected type of value that should be used to interpret Attestation Data to encode it to Aleo format \(to be used in an Aleo program\).
@@ -490,7 +459,7 @@ The expected type of value that should be used to interpret Attestation Data to 
 type EncodingOptionsValueType string
 ```
 
-<a name="ENCODING_OPTIONS_VALUE_STRING"></a>Available options for EncodingOptionsValueType
+Available options for EncodingOptionsValueType
 
 ```go
 const (
@@ -500,7 +469,6 @@ const (
 )
 ```
 
-<a name="HtmlResultType"></a>
 ## type HtmlResultType
 
 Type of value extraction on a HTML element after applying a selector.
@@ -509,7 +477,7 @@ Type of value extraction on a HTML element after applying a selector.
 type HtmlResultType string
 ```
 
-<a name="HTML_RESULT_TYPE_ELEMENT"></a>Available options for HTML result type. Given a selected HTML element
+Available options for HTML result type. Given a selected HTML element
 
 ```
 <a href="/test">Nice link</a>
@@ -522,7 +490,6 @@ const (
 )
 ```
 
-<a name="NotarizationOptions"></a>
 ## type NotarizationOptions
 
 NotarizationOptions contains ptional parameters that you can provide to Notarize method.
@@ -551,7 +518,6 @@ type NotarizationOptions struct {
 }
 ```
 
-<a name="OracleData"></a>
 ## type OracleData
 
 OracleData contains information that can be used in your Aleo program. All fields are encoded to Aleo\-compatible formats and represented as strings.
@@ -591,7 +557,6 @@ type OracleData struct {
 }
 ```
 
-<a name="PositionInfo"></a>
 ## type PositionInfo
 
 PositionInfo contains extra information about the way attestation response was encoded for Aleo. Useful in development to find the positions of different response elements for Aleo program development.
@@ -608,7 +573,6 @@ type PositionInfo struct {
 }
 ```
 
-<a name="ProofPositionalInfo"></a>
 ## type ProofPositionalInfo
 
 ProofPositionalInfo is an object containing information about the positions of data included in the Attestation Report hash. This object is created to help developers understand how to extract fields to verify or use them in Aleo programs.
@@ -630,7 +594,6 @@ type ProofPositionalInfo struct {
 }
 ```
 
-<a name="ResponseFormat"></a>
 ## type ResponseFormat
 
 Attestation target response format
@@ -639,7 +602,7 @@ Attestation target response format
 type ResponseFormat string
 ```
 
-<a name="RESPONSE_FORMAT_JSON"></a>Available options for ResponseFormat
+Available options for ResponseFormat
 
 ```go
 const (
@@ -648,7 +611,6 @@ const (
 )
 ```
 
-<a name="SgxInfo"></a>
 ## type SgxInfo
 
 Contains information about an SGX enclave.
@@ -667,7 +629,6 @@ type SgxInfo struct {
 }
 ```
 
-<a name="TestSelectorOptions"></a>
 ## type TestSelectorOptions
 
 TestSelector method options.
@@ -678,7 +639,6 @@ type TestSelectorOptions struct {
 }
 ```
 
-<a name="TestSelectorResponse"></a>
 ## type TestSelectorResponse
 
 TestSelector response, which contains information for debugging selectors for extracting AttestationData for calling Notarize.

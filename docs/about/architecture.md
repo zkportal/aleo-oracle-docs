@@ -113,6 +113,8 @@ matches the expected one. This is done using reproducible builds of the Oracle n
 This backend is also capable of decoding Aleo-encoded Report Data, decoding and verifying Aleo-encoded Attestation Reports, e.g. if you want
 to verify someone else's reports/data.
 
+You can self-host this backend by following [this Guide](../guide/hosting_verifier.md).
+
 ## Oracle program
 
 An Aleo program that is capable of accepting Oracle attestation reports and attested data. See more information about how it works in the [Guide about the oracle program](../guide/oracle_program.md).

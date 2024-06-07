@@ -21,6 +21,10 @@ In order to verify the Attestation Report about the data we needed a way to repr
 and classic programming languages. The Attestation results consist of Attestation Data, response status code, and attestation timestamp. From now on, the
 Attestation Request + Attestation results combination will be called Report Data.
 
+!!! warning "userData and Report Data"
+
+    The report data is called `userData` in the SDK response! See [`OracleData.userData` in JS SDK](../sdk/js_api.md#type-oracledata) and [`OracleData.UserData` in Go SDK](../sdk/go_api.md#type-oracledata).
+
 The Aleo program that uses it should be able to hash it and make asserts on certain properties while also taking the least amount of space.
 
 Below is a type that is used in Aleo programs for using Report Data. It's called `ReportData` and it consists of 8 512-byte data chunks.
@@ -127,9 +131,9 @@ then encoded into one or more 16-byte numbers - Aleo's `u128`.
 
     Interpreting the byte array as little endian representation of two 16-byte numbers: `64058020007463102039520502111813332825 4851575473319194672`
 
-    `ReportData.c0.f2` will be `64058020007463102039520502111813332825u128`
+    `ReportData.c0.f2` will be `64058020007463102039520502111813332825u128`.
 
-    `ReportData.c0.f3` will be `4851575473319194672u128`
+    `ReportData.c0.f3` will be `4851575473319194672u128`.
 
 Let's now look into using this encoded string in an Aleo program.
 
@@ -548,5 +552,3 @@ The Encoded Request Hash is created using Aleo's Poseidon8 hash as `u128`.
         }
     }
     ```
-
-You can jump to the [Oracle program](./oracle_program.md) for a detailed explanation of how the Aleo Oracle program works.

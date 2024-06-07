@@ -13,8 +13,10 @@ nav:
   - 'Using the Oracle':
     - 'Getting started': 'guide/index.md'
     - 'Understanding Attestation Response': 'guide/understanding_response.md'
-    - 'Oracle program': 'guide/oracle_program.md'
     - 'Encoding data for Aleo': 'guide/aleo_encoding.md'
+    - 'Submitting data to the Oracle': 'guide/submit_attestation.md'
+    - 'Oracle program': 'guide/oracle_program.md'
+    - 'Self-hosted verifier': 'guide/hosting_verifier.md'
     - 'Accepted headers': 'guide/accepted_headers.md'
   - SDK:
     - Overview: 'sdk/index.md'
@@ -60,12 +62,12 @@ theme:
       accent: light blue
 
 extra:
-  version: 1.2.0
+  version: 1.1.0
   variables:
     links:
       oracle_backend_repo:
-      verification_backend_repo:
-      aleo_encoder_repo:
+      verification_backend_repo: https://github.com/zkportal/oracle-verification-backend
+      aleo_encoder_repo: https://github.com/zkportal/aleo-oracle-encoding
       js_sdk_repo: https://github.com/zkportal/aleo-oracle-sdk-js
       go_sdk_repo: https://github.com/zkportal/aleo-oracle-sdk-go
     constants:
