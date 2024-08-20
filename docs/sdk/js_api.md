@@ -30,6 +30,7 @@ an override for Fetch options that are used for communicating with those backend
         - [`notarize`](#notarize)
         - [`testSelector`](#testselector)
         - [`enclavesInfo`](#enclavesinfo)
+        - [`getAttestedRandom`](#getattestedrandom)
     - [type `AttestationRequest`](#type-attestationrequest)
     - [type `AttestationResponse`](#type-attestationresponse)
     - [type `ClientConfig`](#type-clientconfig)
@@ -207,6 +208,23 @@ Extends: `Error`
 | Thrown type | Reason |
 | --- | --- |
 | [`AttestationError`](#class-attestationerror) | Failed to fetch enclave information from one or more Notarization Backends. |
+| `Error` | Failed to parse one or more responses. |
+| [Fetch API errors](https://developer.mozilla.org/en-US/docs/Web/API/fetch#exceptions) | Fetch failed. |
+
+#### `getAttestedRandom`
+
+| Argument | Description | Required | Default value |
+| --- | --- | --- | --- |
+| `max`: `bigint` | Upper bound for the random number, exclusive - `[0, max)` | :fontawesome-solid-check: | |
+| `options`: [`NotarizationOptions`](#type-notarizationoptions) | Options for client-side notarization behavior | :fontawesome-solid-x: | [`DEFAULT_NOTARIZATION_OPTIONS`](#default_notarization_options) |
+
+| Return type | Description |
+| --- | --- |
+| <code>Promise<[AttestationResponse](#type-attestationresponse)[]></code> | List of attestation results. Returned only if all enclaves produced successful attestations. |
+
+| Thrown type | Reason |
+| --- | --- |
+| [`AttestationError`](#class-attestationerror) | One of the Notarization Backends failed to perform notarization or attestation. |
 | `Error` | Failed to parse one or more responses. |
 | [Fetch API errors](https://developer.mozilla.org/en-US/docs/Web/API/fetch#exceptions) | Fetch failed. |
 

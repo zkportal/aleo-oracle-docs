@@ -28,7 +28,7 @@ arrays of results.
 
 Arguments:
 
-- [Client config](../sdk/js_api.md#type-clientconfig) *optional*
+- [Client config](../sdk/js_api.md#type-clientconfig) - *optional*
 
 Return:
 
@@ -109,7 +109,7 @@ Requests information about enclaves that Notarization Backend is running in. Can
 
 Arguments:
 
-- [Info Options](../sdk/js_api.md#type-infooptions) *optional*
+- ["Get enclave info" method options](../sdk/js_api.md#type-infooptions) - *optional*
 
 Return:
 
@@ -137,7 +137,7 @@ You will be able to see as a result the full response body, extracted data, resp
 Arguments:
 
 - [Attestation Request](../sdk/js_api.md#type-attestationrequest)
-- [test selector options](../sdk/js_api.md#testselector) *optional*
+- ["Test Selector" method options](../sdk/js_api.md#testselector) - *optional*
 
 Return:
 
@@ -183,8 +183,8 @@ It is highly recommended to use time insensitive historic data for notarization.
 
 Arguments:
 
-- [`AttestationRequest`](../sdk/js_api.md#type-attestationrequest)
-- [notarization options](../sdk/js_api.md#type-notarizationoptions) *optional*
+- [Attestation Request](../sdk/js_api.md#type-attestationrequest)
+- [Notarization options](../sdk/js_api.md#type-notarizationoptions) - *optional*
 
 Return:
 
@@ -221,3 +221,21 @@ Return:
     }
     attestedResponses, errList := client.Notarize(request)
     ```
+
+## Get an attested random number
+
+The SDKs provide a method for getting an attested unsigned random number. It works similarly to the notarization flow
+but the notarization backend doesn't perform any outgoing HTTP requests.
+
+The method requires an exclusive upper bound `max` for generating a random number on interval `[0, max)`.
+
+The upper limit corresponds to the maximum value of Leo's `u128` - 340282366920938463463374607431768211456.
+
+Arguments:
+
+- `max` - Upper bound for random generator
+- [Notarization options](../sdk/js_api.md#type-notarizationoptions) - *optional*
+
+Return:
+
+- list of notarization responses [`AttestationResponse`](../sdk/js_api.md#type-attestationresponse)
