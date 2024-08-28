@@ -5,8 +5,6 @@
 <details><summary>Example</summary>
 <p>
 
-
-
 ```go
 // First, we configure the client
 config := &ClientConfig{
@@ -28,6 +26,16 @@ client, err := NewClient(config)
 if err != nil {
 	log.Fatalln(err)
 }
+
+attestedRandoms, errList := client.GetAttestedRandom(big.NewInt(43), nil)
+if errList != nil {
+	log.Fatalln(errList)
+}
+
+// The URL was notarized, the extracted result was attested by the enclaves, enclave signatures were verified by the verifier, you can now use the data
+log.Println()
+log.Println("Data extracted from the URL using the selector:", attestedRandoms[0].AttestationData)
+log.Println()
 
 // Fetch enclave info for all attesters
 infoList, errList := client.GetEnclavesInfo(nil)
@@ -100,6 +108,7 @@ log.Println()
 - [type AttestationResponse](#type-attestationresponse)
 - [type Client](#type-client)
     - [func NewClient\(config \*ClientConfig\) \(\*Client, error\)](#func-newclient)
+    - [func \(c \*Client\) GetAttestedRandom\(max \*big.Int, options \*NotarizationOptions) \(\[\]\*AttestationResponse, \[\]error\)](#func-client-getattestedrandom)
     - [func \(c \*Client\) GetEnclavesInfo\(options \*EnclaveInfoOptions\) \(\[\]\*EnclaveInfo, \[\]error\)](#func-client-getenclavesinfo)
     - [func \(c \*Client\) Notarize\(req \*AttestationRequest, options \*NotarizationOptions\) \(\[\]\*AttestationResponse, \[\]error\)](#func-client-notarize)
     - [func \(c \*Client\) TestSelector\(req \*AttestationRequest, options \*TestSelectorOptions\) \(\[\]\*TestSelectorResponse, \[\]error\)](#func-client-testselector)
@@ -139,8 +148,15 @@ const (
 
 ```go
 var (
+    DEFAULT_NOTARIZATION_OPTIONS = &NotarizationOptions{
+        AttestationContext:  nil,
+        VerificationContext: nil,
+        DataShouldMatch:     true,
+        MaxTimeDeviation:    nil,
+    }
+
     DEFAULT_NOTARIZATION_BACKENDS = []*CustomBackendConfig{
-        &CustomBackendConfig{
+        {
             Address:   "sgx.aleooracle.xyz",
             Port:      443,
             HTTPS:     true,
@@ -290,7 +306,15 @@ type Client struct {
 func NewClient(config *ClientConfig) (*Client, error)
 ```
 
-NewClient creates a new client using the provided configuration. Configuration is optional. If configuration is not provided, will use 1 notarizer and a verifier hosted by the developers, no logging, \[http.DefaultTransport\] for transport.
+NewClient creates a new client using the provided configuration. Configuration is optional. If no configuration is provided, then only one notarizer is used with a verifier hosted by zkPortal, and a transport similar to \[http.DefaultTransport\], and no logging.
+
+### func \(\*Client\) GetAttestedRandom
+
+```go
+func (c *Client) GetAttestedRandom(max *big.Int, options *NotarizationOptions) ([]*AttestationResponse, []error)
+```
+
+Requests an attested random number within a \[0, max\) interval.
 
 ### func \(\*Client\) GetEnclavesInfo
 
@@ -345,7 +369,7 @@ type ClientConfig struct {
     // Optional Client logger. No logs will be used if not provided.
     Logger *log.Logger
 
-    // Optional transport configuration. If not provided, the [http.DefaultTransport] will be used.
+    // Optional transport configuration. If not provided, the a transport similar to [http.DefaultTransport] will be used.
     Transport http.RoundTripper
 }
 ```
@@ -356,31 +380,21 @@ CustomBackendConfig is a configuration object for using custom notarizer or veri
 
 ```go
 type CustomBackendConfig struct {
-    /**
-    * Domain name or IP address of the backend
-     */
+    // Domain name or IP address of the backend
     Address string
 
-    /**
-    * The port that the backend listens on for the API requests
-     */
+    // The port that the backend listens on for the API requests
     Port uint16
 
-    /**
-    * Whether the client should use HTTPS to connect to the backend
-     */
+    // Whether the client should use HTTPS to connect to the backend
     HTTPS bool
 
-    /**
-    * Whether the client should resolve the backend (when it's a domain name).
-    * If the domain name is resolved to more than one IP, then the requests will be
-    * sent to all of the resolved servers, and the first response will be used.
-     */
+    // Whether the client should resolve the backend (when it's a domain name).
+    // If the domain name is resolved to more than one IP, then the requests will be
+    // sent to all of the resolved servers, and the first response will be used.
     Resolve bool
 
-    /**
-    * Optional API prefix to use before the API endpoints
-     */
+    // Optional API prefix to use before the API endpoints
     ApiPrefix string
 }
 ```
@@ -409,7 +423,6 @@ type EnclaveInfo struct {
     SgxInfo *SgxInfo
 }
 ```
-
 ## type EnclaveInfoOptions
 
 GetEnclavesInfo options.

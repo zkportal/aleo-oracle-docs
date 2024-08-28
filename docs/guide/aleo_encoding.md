@@ -7,7 +7,7 @@ them. For example, an oracle should verify the report's signature, TEE unique ID
 
 To achieve that, the response and report must be serialized and encoded in a specific way.
 
-Encoding of the [Attestation Response](../sdk/js_api.md#type-attestationresponse) + attestation results (Report Data) happens on backend.
+Encoding of the [Attestation Response](../sdk/js_api.md#type-attestationresponse) + attestation results (Report Data) happens on the backend.
 
 ## Encoding header
 
@@ -21,7 +21,7 @@ It helps decoding and deserializing the Report Data in Aleo back to the human-re
 Here's the description of the encoding of a response. Every item in the list is written to a single buffer,
 every item is padded at the end with zeroes to align to 16, every item takes at least 16 bytes.
 
-Here are the steps that are done for serializing and encoding Report Data:
+Here are the steps that are done for serialization and encoding Report Data:
 
 1. [Encode Attestation Data](#1-encode-attestation-data)
 2. [Encode Attestation Timestamp](#2-encode-attestation-timestamp)
@@ -32,7 +32,7 @@ Here are the steps that are done for serializing and encoding Report Data:
 7. [Encode request method as bytes of the string](#7-encode-request-method-as-bytes-of-the-string)
 8. [Encode encoding options object](#8-encode-encoding-options-object)
 9. [Encode request headers](#9-encode-request-headers)
-10. [Encode HTML result type, request content type and request body](#10-encode-optional-properties). These 3 fields optional in the request, and they are encoded even if they are empty.
+10. [Encode HTML result type, request content type and request body](#10-encode-optional-properties). These 3 fields are optional in the request, and they are encoded even if they are empty.
 
 ### 1. Encode Attestation Data
 
@@ -129,7 +129,7 @@ The header is followed by the following content:
 1. 1 `u128` encoding HTML result type. The first little endian byte encodes the value - `1` for `element`, `2` for `value`.
 If there's no HTML result type, then the whole `u128` is 0.
 
-2. At least 1 `u128` encoding the Atetstation Request's content type.
+2. At least 1 `u128` encoding the Attestation Request's content type.
 The first 8 little endian bytes encode the number of the following `u128`s encoding the actual content type as character
 codes. If there is no content type, there is 1 `u128` of 0, followed by 0 `u128`s of content.
 

@@ -137,11 +137,11 @@ then encoded into one or more 16-byte numbers - Aleo's `u128`.
 
 Let's now look into using this encoded string in an Aleo program.
 
-You can make asserts on single bytes, part of the string, or the whole string.
+You can make assertions on single bytes, part of the string, or the whole string.
 
-For the sake of simplicity, the following examples will not use `ReportData` struct just yet.
+For the sake of simplicity, the following examples will not use the `ReportData` struct just yet.
 
-??? example "Make asserts on the whole string"
+??? example "Make assertions on the whole string"
 
     It's as simple as comparing two numbers.
 
@@ -350,11 +350,11 @@ Let's take a look at our weather example again
 An Attestation Report is a report document about some data. The document is signed by the TEE enclave, and it contains additional information about the enclave such as
 unique ID, signer ID, security information.
 
-Verifying the Attestation Report provides assurances that the enclave running a specific version of source code, with some specific configuration. In case of Intel SGX,
+Verifying the Attestation Report provides assurances that the enclave is running a specific version of source code, with some specific configuration. In case of Intel SGX,
 the Intel corporation acts as a security collateral. They also provide a list of combinations of software and hardware and their security level.
 
 In the SDK's response, the Attestation Report is encoded in the `attestationReport` using Base64 encoding. This report is verified by the verification backend during the SDK's
-Notarize procedure. The verification backend makes asserts on the enclave unique ID during the verification - it uses the reproducibility of enclave build process to find the expected unique ID.
+Notarize procedure. The verification backend makes assertions on the enclave unique ID during the verification - it uses the reproducibility of the enclave build process to find the expected unique ID.
 
 The Attestation Report can include up to 64 bytes of user data. In our case, the data is Aleo's Poseidon8 hash of serialized and formatted Report Data.
 
@@ -405,7 +405,7 @@ Here are some more enclave flags and properties you can use:
     - `assert_eq(report.c0.f7 & 4u128, 4u128)` - assert that the enclave is in 64-bit mode
 - `report.c0.f8`, `report.c0.f9` - enclave's unique ID
 - `report.c0.12`, `report.c0.f13` - enclave's signer ID
-- `report.c0.f20` - 2 bytes of product ID + 2 bytes of security version + 2 bytes of config security version + 10 bytes of zeroes
+- `report.c0.f20` - 2 bytes of product ID + 2 bytes of security version + 2 bytes of config security version + 10 bytes of zeros
 - `report.c0.f23` - enclave family ID
 - `report.c0.f24`-`c0.f27` - 4 `u128` (64 bytes) of report data
 
@@ -417,7 +417,7 @@ See Intel SGX and Open Enclave official documentation for more information.
 
 The enclave Attestation Report from Intel SGX contains an ECDSA signature. At the moment Aleo doesn't support ECDSA signatures, and [uses Schnorr instead](https://developer.aleo.org/leo/language#signatures).
 
-To work around that, the backend will be generating an Aleo private key on startup. This key is then used to sign the whole Attestation Report after it serialized and encoded for Aleo.
+To work around that, the backend will be generating an Aleo private key on startup. This key is then used to sign the whole Attestation Report after it is serialized and encoded for Aleo.
 
 That way, the signature can be verified in an Aleo program.
 
