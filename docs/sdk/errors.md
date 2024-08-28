@@ -244,6 +244,20 @@ The Notarization Target is not on a domain that is allowed to be notarized by th
 
 A limit of outgoing requests per second to the specified Notarization Target has been reached. Try again later.
 
+### Attested random number errors
+
+#### 400
+```"missing "max" search parameter"```
+
+The request to create an attested random number has failed due to missing the `max` URL search parameter. Make sure the URL looks like
+`https://sgx.aleooracle.xyz/random?max=123`.
+
+#### 401
+```expected "max" search parameter to be a number 2-340282366920938463463374607431768211456```
+
+The request to create an attested random number has failed due to an invalid value of the `max` URL search parameter. The `max` parameter should be a number
+between 2 and 340282366920938463463374607431768211456. The upper limit is defined as 2^128^, which is the maximum possible value of Leo language's `u128` type + 1.
+
 ####
 
 ### Encoding Errors
