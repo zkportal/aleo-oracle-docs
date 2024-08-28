@@ -43,8 +43,8 @@ Aleo Oracle minimizes the problem above by using a combination of the following 
 
 Using a TEE resolves many of the known Blockchain Oracle issues.
 
-By the virtue of having an open source code, reproducible builds, and source code signatures, users can verify the data veracity and that the oracle operates correctly and does what it's supposed to be doing.
+By virtue of having an open source code, reproducible builds, and source code signatures, users can verify the data veracity and that the oracle operates correctly and does what it's supposed to be doing.
 
 The Oracle client supports multiple attestation backends in different TEEs, thus eliminating the single-point-of-failure.
 
-See the [Architecture](./architecture.md) page to learn more on how Aleo Oracle solution works.
+See the [Architecture](./architecture.md) page to learn more on how the Aleo Oracle solution works.

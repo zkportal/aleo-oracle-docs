@@ -82,7 +82,7 @@ sequenceDiagram
 
 ## Oracle client
 
-The Oracle client is a dApp that needs to consume data from web2.0 in a secure way. This is most likeyly you - the developer!
+The Oracle client is a dApp that needs to consume data from web2.0 in a secure way. This is most likely you - the developer!
 
 By using one of the Oracle SDKs you can integrate the functionality of requesting web2.0 resources and using them in Aleo blockchain and your dApp.
 
@@ -107,7 +107,7 @@ The results are signed and attested by the TEE enclave.
 
 [Oracle verification backend repository :fontawesome-brands-github:]({{ variables.links.verification_backend_repo }})
 
-An Oracle verification backend received attested responses and verifies the attestation reports. One of the steps is verifying that the unique ID of the attesting enclave
+An Oracle verification backend receives attested responses and verifies the attestation reports. One of the steps is verifying that the unique ID of the attesting enclave
 matches the expected one. This is done using reproducible builds of the Oracle notarization backend.
 
 This backend is also capable of decoding Aleo-encoded Report Data, decoding and verifying Aleo-encoded Attestation Reports, e.g. if you want

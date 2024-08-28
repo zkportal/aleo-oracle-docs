@@ -16,7 +16,7 @@ the right headers, and/or cookies, and/or request body.
 
     That means you cannot use the data that is rendered after the website is loaded, e.g. if it's fetched using XHR or Websocket.
 
-    But you will probably be able to use directly the API that the website has used to fetch the data.
+    But you will probably be able to directly use the API that the website has used to fetch the data.
 
 Some examples of the data you may want to use in a program:
 
@@ -207,7 +207,7 @@ If the data after applying the selector is `<a href="/test">Nice link</a>`
 
 ### Request body
 
-Can be used to provide a POST request body for the attestation target request. Max allowed size is `{{ variables.constants.attestation_text_size_limit }}`. Has effect only when Request method is `POST`.
+Can be used to provide a POST request body for the attestation target request. Max allowed size is `{{ variables.constants.attestation_text_size_limit }}`. Has effect only when the Request method is `POST`.
 
 !!! example
 
@@ -218,7 +218,7 @@ Can be used to provide a POST request body for the attestation target request. M
 ### Request content type
 
 Can be used to provide a Content-Type request header for the attestation target request.
-Has effect only when Request method is `POST`.
+Has effect only when the Request method is `POST`.
 
 !!! example
 
@@ -233,7 +233,7 @@ The header values that may contain sensitive information (like `Authorization`, 
 
     Here is a list of [known headers that will not be replaced](./accepted_headers.md).
 
-The SDK will use some default headers, which can be overriden.
+The SDK will use some default headers, which can be overridden.
 
 <div class="grid cards" markdown>
 
@@ -377,7 +377,7 @@ It accepts a request and Notarization Options.
     You can use the Test Selector method in the SDK of your choice to perform notarization without attestation.
 
     Notarization Backend will try to request the attestation target and extract data with the provided selector.
-    You can use the same request that you would use for Notarize method to see if the Notarization Backend is able to get your data and correctly extract it.
+    You can use the same request that you would use for the Notarize method to see if the Notarization Backend is able to get your data and correctly extract it.
     You will be able to see as a result the full response body, extracted data, response status code and errors if there are any.
 
     The difference between Test Selector and Notarize is that Notarize will not return the response body if the extraction fails.
@@ -421,7 +421,7 @@ Attestation request timeout in milliseconds. If not set, a default value will be
 If multiple attesters are used this option controls the maximum deviation in milliseconds between attestation timestamps.
 
 - if set to 0, requires that all attestations are done at the same time (not recommended). Note that the attestation timestamp is set by the attestation server using server time.
-- if is not set, no time deviation checks are performed.
+- if not set, no time deviation checks are performed.
 - if time deviation is set to less then a second, attestation might fail due to naturally occuring network delays between the Oracle SDK, the notarization backends, and the attestation target.
 - if deviation is set to more than 10 seconds (10 * 1000 ms), the attestation target responses might differ from each other if one of the requests took too long, and the requested information either had changed or was not available anymore.
 

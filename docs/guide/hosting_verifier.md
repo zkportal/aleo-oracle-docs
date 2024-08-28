@@ -3,7 +3,7 @@
 [Verification backend :fontawesome-brands-github:]({{ variables.links.verification_backend_repo }})
 
 At this moment the Aleo blockchain cannot natively verify our TEE report. To allow for a transparent verification of the attested data we are making a backend available
-for everyone to run and verify that each oracle update actualy carries a valid TEE report. This does not require the user to have a TEE themselves.
+for everyone to run and verify that each oracle update actually carries a valid TEE report. This does not require the user to have a TEE themselves.
 As soon as Aleo is able to verify e.g. ECDSA signatures natively this will become superfluous.
 
 ## Prerequisites
@@ -384,13 +384,13 @@ For more information on the `decodedData` properties, see documentation for `Att
 
 #### Decoded report breakdown
 
-A decoded TEE report is returned in `decodedReport` object. It was decoded from request's `report` string, parsed, and verified.
+A decoded TEE report is returned in the `decodedReport` object. It was decoded from the request's `report` string, parsed, and verified.
 
 Decoded report properties
 
 | name | meaning |
 | ---- | ------- |
-| `data` | 64 bytes of data thad was signed by the enclave. In this case it's a Poseidon8 hash of `decodedData` (16 bytes) |
+| `data` | 64 bytes of data that was signed by the enclave. In this case it's a Poseidon8 hash of `decodedData` (16 bytes) |
 | `securityVersion` | Enclave security version, which is bumped when a security patch is applied without changing the enclave code or data |
 | `debug` | Whether the enclave is running in a debug mode |
 | `uniqueId` | A unique ID of the enclave created by hashing the code and data of the enclave, 32 bytes |
@@ -399,7 +399,7 @@ Decoded report properties
 | `aleoSignerId` | An array of 2 strings, where the `signerId` is encoded as 2 Leo values of type `u128` |
 | `productId` | Used to indicate different software modules within the same enclave, 16 bytes |
 | `aleoProductId` | A string of `productId` encoded as 1 Leo value of type `u128` |
-| `tcbStatus` | Trusted Computing Base - level of trustwortiness or security assurance |
+| `tcbStatus` | Trusted Computing Base - level of trustworthiness or security assurance |
 
 <details>
 <summary><b>Example response</b></summary>

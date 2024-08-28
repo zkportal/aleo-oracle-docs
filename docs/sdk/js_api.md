@@ -281,7 +281,7 @@ Omit<RequestInit, 'body' | 'integrity' | 'method'>
 
 ### type `CustomBackendConfig`
 
-Configuration for a backend that Oracle client will be using for notarization/verification.
+Configuration for a backend that an Oracle client will be using for notarization/verification.
 
 | Property | Type | Description |
 | --- | --- | --- |
@@ -289,7 +289,7 @@ Configuration for a backend that Oracle client will be using for notarization/ve
 | `port` | `number` | The port that the backend listens on for the API requests |
 | `https` | `boolean` | Whether the client should use HTTPS to connect to the backend |
 | `apiPrefix` | `string | undefined` | Optional API prefix to prepend to the API endpoints |
-| `resolve` | `boolean` | Whether the client should resolve the backend (when it's a domain name). If the domain name is resolved to more than one IP, then the requests will be sent to all of the resolved servers, and the first response will be used. Must use with the default backends. |
+| `resolve` | `boolean` | Whether the client should resolve the backend (when it's a domain name). If the domain name is resolved to more than one IP, then the requests will be sent to all of the resolved servers, and the first response will be used. Must be used with the default backends. |
 | `init` | <code>[CustomBackendAllowedFetchOptions](#type-custombackendallowedfetchoptions) \| undefined</code> | Custom Fetch API options for requests towards this backend. If not provided, will use [`DEFAULT_FETCH_OPTIONS`](#default_fetch_options). |
 
 ### type `DebugRequestResponse`
@@ -322,7 +322,7 @@ See the [Guide about Aleo encoding](../guide/understanding_response.md#about-enc
 | Property | Type | Description |
 | --- | --- | --- |
 | `value` | `'string' | 'int' | 'float'` | Attestation Data type to use to interpret the Attestation Data to encode it to the Aleo format. |
-| `precision` | `number | undefined` | If value is `'float'`, sets the precision of the Attestation Data. Mush be equal or more than the number of digits in the fractional part. |
+| `precision` | `number | undefined` | If the value is `'float'`, it sets the precision of the Attestation Data. Must be equal or more than the number of digits in the fractional part. |
 
 ### type `InfoOptions`
 
@@ -350,7 +350,7 @@ how these values are created.
 | Property | Type | Description |
 | --- | --- | --- |
 | `signature` | `string` | Schnorr signature of a verified Attestation Report as Aleo's `signature`. |
-| `userData` | `string` | Aleo-encoded data, that was used to create hash included in the Attestation Report. See the [Guide about Aleo encoding](../guide/understanding_response.md#about-encoding-data-for-aleo). |
+| `userData` | `string` | Aleo-encoded data that was used to create hash included in the Attestation Report. See the [Guide about Aleo encoding](../guide/understanding_response.md#about-encoding-data-for-aleo). |
 | `report` | `string` | Aleo-encoded Attestation Report. |
 | `address` | `string` | Public key signature was created against. |
 | `encodedPositions` | [`ProofPositionalInfo`](#type-proofpositionalinfo) | Object containing information about positions of data included in the Attestation Response hash. |

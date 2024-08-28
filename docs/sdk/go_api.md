@@ -5,8 +5,6 @@
 <details><summary>Example</summary>
 <p>
 
-
-
 ```go
 // First, we configure the client
 config := &ClientConfig{
@@ -308,7 +306,7 @@ type Client struct {
 func NewClient(config *ClientConfig) (*Client, error)
 ```
 
-NewClient creates a new client using the provided configuration. Configuration is optional. If configuration is not provided, will use 1 notarizer and a verifier hosted by the developers, no logging, a transport similar to \[http.DefaultTransport\] for transport.
+NewClient creates a new client using the provided configuration. Configuration is optional. If no configuration is provided, then only one notarizer is used with a verifier hosted by zkPortal, and a transport similar to \[http.DefaultTransport\], and no logging.
 
 ### func \(\*Client\) GetAttestedRandom
 

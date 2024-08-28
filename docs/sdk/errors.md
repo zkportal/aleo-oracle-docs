@@ -69,20 +69,20 @@ Field `htmlResultType` has an invalid value. Look for an error `106` above for a
 #### 116
 ```validation error: selector is not a valid xpath expression```
 
-Notarization Backend was unable to parse `selector` as a valid xpath expression. Make sure you using correct xpath syntax.
+Notarization Backend was unable to parse `selector` as a valid xpath expression. Make sure you are using correct xpath syntax.
 
 #### 120
 ```validation error: requestBody is required with POST requestMethod```
 
-When `requestMethod` is `POST` you are required to provide `requestBody` field.
+When `requestMethod` is `POST` you are required to provide the `requestBody` field.
 
 #### 121
 ```validation error: contentType is required with POST requestMethod```
 
-When `requestMethod` is `POST` you are required to provide `contentType` field.
+When `requestMethod` is `POST` you are required to provide the `contentType` field.
 
 #### 130
-```validation error: max field lengh is 4kb```
+```validation error: max field length is 4kb```
 
 One of the fields in `AttestationRequest` is bigger than 4 kilobytes. Please check the sizes of the provided fields.
 
@@ -94,7 +94,7 @@ Field `encodingOptions.value` in `AttestationRequest` can only be `string` \| `i
 #### 141
 ```validation error: encoding option precision for floating point number is too big```
 
-Max value for field `encodingOptions.precision` in `AttestationRequest` is 12. Please provide smaller number.
+Max value for field `encodingOptions.precision` in `AttestationRequest` is 12. Please provide a smaller number.
 
 #### 142
 ```validation error: encodingOptions.value is required```
@@ -111,7 +111,7 @@ Field `encodingOptions.precision` is required when `encodingOptions.value` is `f
 #### 201
 ```request error: failed to create request```
 
-Notarization Backend was unable to create a request to the attestation target with the provided parameters. Please verify that `AttestationRequest` object is valid.
+Notarization Backend was unable to create a request to the attestation target with the provided parameters. Please verify that the `AttestationRequest` object is valid.
 
 #### 202
 ```request error: failed to execute request```
@@ -130,12 +130,12 @@ Notarization Backend was unable to execute a request created from `AttestationRe
 #### 203
 ```request error: error reading response body```
 
-Notarization Backend was unable to read a body from the attestation target response. Make sure that `AttestationRequest` that you provided is valid.
+Notarization Backend was unable to read a body from the attestation target response. Make sure that the `AttestationRequest` that you provided is valid.
 
 #### 210
 ```response parsing error: invalid html in response```
 
-Attestation target responded with non-html content but `html` response format is expected or HTML in the response might been invalid. Make sure you provided a correct `responseFormat`. Also check that `url` is correct and that all required `requestHeaders` and parameters are present to reproduce your request correctly.
+Attestation target responded with non-html content but `html` response format is expected or HTML in the response might be invalid. Make sure you provided a correct `responseFormat`. Also check that `url` is correct and that all required `requestHeaders` and parameters are present to reproduce your request correctly.
 
 #### 211
 ```response parsing error: failed to query XPath```
@@ -166,7 +166,7 @@ If you are having trouble fixing this error and extracting the correct value, yo
 #### 221
 ```response parsing error: invalid JSON in response```
 
-Attestation target responded with non-JSON content but `json` response format is expected or JSON in the response might been invalid. Make sure you provided a correct `responseFormat`. Also check that `url` is correct and that all required `requestHeaders` and parameters are present to reproduce your request correctly.
+Attestation target responded with non-JSON content but `json` response format is expected or JSON in the response might be invalid. Make sure you provided a correct `responseFormat`. Also check that `url` is correct and that all required `requestHeaders` and parameters are present to reproduce your request correctly.
 
 #### 222
 ```response parsing error: failed to query JSONPath or key not found```
@@ -197,16 +197,16 @@ If you are having trouble fixing this error and extracting the correct value, yo
 #### 223
 ```response parsing error: found an empty JSON```
 
-Notarizing backend found an empty JSON using the provided `selector`. This might be due to an invalid `selector` or the notarization backend getting an incorrect response from attestation target. Make sure that `selector` is correct and that all required `requestHeaders` and parameters are present to reproduce your request correctly.
+Notarizing backend found an empty JSON using the provided `selector`. This might be due to an invalid `selector` or the notarization backend getting an incorrect response from the attestation target. Make sure that `selector` is correct and that all required `requestHeaders` and parameters are present to reproduce your request correctly.
 
-If you are having trouble to fix this error and extract correct value, you might try to use `testSelector()` to see that backend is getting the correct response.
+If you are having trouble fixing this error and extracting the correct value, you might try to use `testSelector()` to see that the backend is getting the correct response.
 
 #### 224
 ```response parsing error: found invalid JSON value```
 
-Extracted data is not a valid `json` value or object. This might be due to invalid `selector` or the notarization backend getting incorrect response from attestation target. Make sure that `selector` is correct and that all required `requestHeaders` and parameters are present to reproduce your request correctly.
+Extracted data is not a valid `json` value or object. This might be due to invalid `selector` or the notarization backend getting an incorrect response from the attestation target. Make sure that `selector` is correct and that all required `requestHeaders` and parameters are present to reproduce your request correctly.
 
-If you are having trouble to fix this error and extract correct value, you might try to use `testSelector()` to see that backend is getting the correct response.
+If you are having trouble fixing this error and extracting the correct value, you might try to use `testSelector()` to see that the backend is getting the correct response.
 
 #### 250
 ```error: extracted data is too big for attestation. Max allowed is 4kb```
@@ -215,9 +215,9 @@ Attestation target responded with a body bigger than `4kb`. Try to make the resp
 
 ### Attestation Errors
 
-Errors with 3XX codes mean that something went wrong during the attestation process. These are internal errors related to Trusted Execution Environment.
+Errors with 3XX codes mean that something went wrong during the attestation process. These are internal errors related to the Trusted Execution Environment.
 
-You should never encounter any of these errors if the Notarization Backend is setup correctly, but please contact developers if you encounter one of those.
+You should never encounter any of these errors if the Notarization Backend is set up correctly, but please contact developers if you encounter one of those.
 
 ```
 301 - nitro attestation error: failed to open Nitro Security Module session
@@ -275,7 +275,7 @@ Notarization backend tried to parse the Attestation Data in scientific notation 
 #### 1003
 ```scientific notation is not supported for floats```
 
-Notarization backend tried to parse the Attestation Data in scientific notation format (for ex. 1.234456e+78 or 6.72×109) as a `float` but failed. Try using `string` format or provide a differently formatted value.
+Notarization backend tried to parse the Attestation Data in scientific notation format (e.g. 1.234456e+78 or 6.72×109) as a `float` but failed. Try using `string` format or provide a differently formatted value.
 
 #### 1004
 ```extracted value expected to be float but failed to parse as float```
@@ -299,8 +299,8 @@ Extracted data have more digits in the fractional part than the provided precisi
 #### 1009
 ```negative numbers are not supported for floats```
 
-Notarization Backend can only encode positive numbers. Please make sure that the Extracted Data contain a positive number.
+Notarization Backend can only encode positive numbers. Please make sure that the Extracted Data contains a positive number.
 
 ### Internal Errors
 
-Errors with codes `1` to `4`, `331`, `332`, `333`, `1000`, `1007`, and `1008` mean that there was an internal error related to marshaling or encoding information at some point in the attestation process. These errors should never occure, but in case they did - please contact developers.
+Errors with codes `1` to `4`, `331`, `332`, `333`, `1000`, `1007`, and `1008` mean that there was an internal error related to marshalling or encoding information at some point in the attestation process. These errors should never occur, but in case they did - please contact developers.

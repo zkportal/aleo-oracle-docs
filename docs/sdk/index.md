@@ -131,7 +131,7 @@ Return:
 
 This function can be used to test your requests without performing attestation and verification.
 Notarization Backend will try to request the attestation target and extract data with the provided selector.
-You can use the same request that you would use for Notarize method to see if the Notarization Backend is able to get your data and correctly extract it.
+You can use the same request that you would use for the Notarize method to see if the Notarization Backend is able to get your data and correctly extract it.
 You will be able to see as a result the full response body, extracted data, response status code and errors if there are any.
 
 Arguments:
@@ -227,7 +227,8 @@ Return:
 The SDKs provide a method for getting an attested unsigned random number. It works similarly to the notarization flow
 but the notarization backend doesn't perform any outgoing HTTP requests.
 
-The method requires an exclusive upper bound `max` for generating a random number on interval `[0, max)`.
+The method requires an exclusive upper bound `max` for generating a random number on interval `[0, max)`. The max value can be found in the
+attestation request URL in the attestation response.
 
 The upper limit corresponds to the maximum value of Leo's `u128` - 340282366920938463463374607431768211456.
 

@@ -8,7 +8,7 @@ Values of headers that are **NOT** present in this list will be replaced by the 
     ```js
     requestHeaders: {
       "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.6 Safari/605.1.15",
-      "Custom-Header-With-Sensetive-Info": "Private Value"
+      "Custom-Header-With-Sensitive-Info": "Private Value"
     }
     ```
 
@@ -16,7 +16,7 @@ Values of headers that are **NOT** present in this list will be replaced by the 
     ```js
     requestHeaders: {
       "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.6 Safari/605.1.15",
-      "Custom-Header-With-Sensetive-Info": "*****"
+      "Custom-Header-With-Sensitive-Info": "*****"
     }
     ```
 
@@ -28,7 +28,7 @@ List of headers which are **not** going to be replaced:
 - `Accept-Encoding`
 - `Accept-Language`
 - `Access-Control-Request-Method`
-- `Access-Control-Request-Heade`
+- `Access-Control-Request-Header`
 - `Cache-Control`
 - `Connection`
 - `Content-Encoding`
