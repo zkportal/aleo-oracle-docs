@@ -470,9 +470,11 @@ This brings us to a full example of verifying the Attestation Report and Report 
     }
     ```
 
-## About request hash
+## About request hashes
 
-The oracle data contains an Encoded Request and an Encoded Request Hash. The Encoded Request is the same as the Report Data but
+The oracle data contains an Encoded Request, an Encoded Request Hash, and a timestamped Encoded Request Hash.
+
+The Encoded Request is the same as the Report Data but
 with the Attestation Data and Attestation Timestamp zeroed out. Attestation Data and Timestamp are the only parts of Report Data that can be different every time you perform notarization. By zeroing out these 2 fields, we can create a constant Report Data, which is going to represent a request to the attestation target.
 
 <code>[AttestationResponse](../sdk/js_api.md#type-attestationresponse).[oracleData](../sdk/js_api.md#type-oracledata).encodedRequest</code>
@@ -486,14 +488,14 @@ with the desired parameters. When hashed, it's also easier to store in a mapping
 
 The Encoded Request Hash is created using Aleo's Poseidon8 hash as `u128`.
 
-!!! example "Using Request Hash"
+!!! example "Using a Request Hash"
 
     ```leo linenums="1" hl_lines="9 10 42 52 58 60"
     program check_request.aleo {
         // assume that the hash is stored in key 0u8
         mapping expected_request_hash: u8 => u128;
 
-        transition check_request(public report_data: ReportData) {
+        async transition check_request(public report_data: ReportData) -> Future {
             let first_data_chunk: DataChunk = DataChunk {
                 f0: report_data.c0.f0,
                 f1: report_data.c0.f1,
@@ -542,13 +544,50 @@ The Encoded Request Hash is created using Aleo's Poseidon8 hash as `u128`.
 
             let request_hash: u128 = Poseidon8::hash_to_u128(request_data);
 
-            return then finalize(request_hash);
+            return finalize_check_request(request_hash);
         }
 
-        finalize check_request(public request_hash: u128) {
+        async function finalize_check_request(public request_hash: u128) {
             let expected_request_hash: u128 = Mapping::get(0u8);
 
             assert_eq(request_hash, expected_request_hash);
+        }
+    }
+    ```
+
+A timestamped Encoded Request Hash combines the Encoded Request Hash with the attestation timestamp to uniquely identify
+a a request done at a certain point of time.
+
+!!! example "Using a timetstamped Request Hash"
+
+    ```leo linenums="1" hl_lines="12 15 16 19 27"
+    program check_request.aleo {
+        // assume that the hash is stored in key 0u8
+        mapping expected_request_hash: u8 => u128;
+
+        struct TimestampedHash {
+            request_hash: u128,
+            attestation_timestamp: u128
+        }
+
+        async transition check_request(public report_data: ReportData) -> Future {
+            ...
+            let request_hash: u128 = 0u128; // previously computed request hash
+
+            let struct_to_hash: TimestampedHash = TimestampedHash {
+              request_hash: request_hash,
+              attestation_timestamp: report_data.c0.f3
+            };
+
+            let timestamped_hash: u128 = Poseidon8::hash_to_u128(struct_to_hash);
+
+            return finalize_check_request(timestamped_hash);
+        }
+
+        async function finalize_check_request(public timestamped_hash: u128) {
+            let expected_request_hash: u128 = Mapping::get(0u8);
+
+            assert_eq(timestamped_hash, expected_request_hash);
         }
     }
     ```
