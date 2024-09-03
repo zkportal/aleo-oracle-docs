@@ -31,7 +31,7 @@ snarkos developer deploy official_oracle.aleo --private-key <privateKey> --query
 
 - Update oracle with `unique_id` and `public_key`. You can get `unique_id` and `public_key` by requesting `/info` endpoint of the [Oracle Notarization backend](https://sgx.aleooracle.xyz/info)
 ```
-snarkos developer execute official_oracle.aleo set_key <signerPubKey> --private-key <privateKey> --query "http://0.0.0.0:3030" --broadcast "http://0.0.0.0:3030/mainnet/transaction/broadcast"
+snarkos developer execute official_oracle.aleo set_key '<signerPubKey>' '<true|false>' --private-key <privateKey> --query "http://0.0.0.0:3030" --broadcast "http://0.0.0.0:3030/mainnet/transaction/broadcast"
 
 snarkos developer execute official_oracle.aleo set_unique_id '{ chunk_1: <unique_id_1>, chunk_2: <unique_id_2> }' --private-key <privateKey> --query "http://0.0.0.0:3030" --broadcast "http://0.0.0.0:3030/mainnet/transaction/broadcast"
 ```
