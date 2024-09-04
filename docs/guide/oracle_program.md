@@ -40,7 +40,7 @@ snarkos developer execute official_oracle.aleo set_unique_id '{ chunk_1: <unique
 
 ## Aleo Oracle program
 
-You can find this program deployed in the [Aleo Explorer](https://explorer.aleo.org/program/official_oracle.aleo) or [Aleo Info](https://aleo.info/program/official_oracle.aleo).
+You can find this program deployed in the testnet by visiting the [official Aleo Explorer](https://explorer.aleo.org/program/official_oracle_v2.aleo) or [Aleo123 explorer](https://testnetbeta.aleo123.io/programDetail/official_oracle_v2.aleo).
 
 ### Types
 
@@ -1646,3 +1646,19 @@ Aleo Oracle stores all the values as `u128` numbers. In case you require smaller
         cast r0 into r1 as u64;
         cast r0 into r2 as u32;
         ```
+
+## Migration guide
+
+### v1 to v2
+
+There's a deployed version 1 of the Oracle program in the test network - [official_oracle.aleo](https://explorer.aleo.org/program/official_oracle.aleo)
+
+To migrate from version 1 to version 2, you need to perform the following changes:
+
+1. Import `official_oracle_v2.aleo` instead of `official_oracle.aleo`;
+2. Change `set_data` call to `set_data_sgx`;
+3. Change reads of the `attested_data` mapping to `sgx_attested_data`, which now returns an [`AttestedData`](#attesteddata) struct instead of the attested data `u128` value. Use `data` property to access the data;
+4. Remove reads of the `last_update_timestamp` mapping, if you had any.
+
+In addition to having the latest data in the mapping, you can now read the historical (timestamped) data too.
+See more in [`set_data_sgx`](#set_data_sgx) and the [Request Hash guide](./understanding_response.md#about-request-hashes).
