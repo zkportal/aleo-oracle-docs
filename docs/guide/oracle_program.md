@@ -1660,5 +1660,5 @@ To migrate from version 1 to version 2, you need to perform the following change
 3. Change reads of the `attested_data` mapping to `sgx_attested_data`, which now returns an [`AttestedData`](#attesteddata) struct instead of the attested data `u128` value. Use `data` property to access the data;
 4. Remove reads of the `last_update_timestamp` mapping, if you had any.
 
-Instead of always having the latest data in the mapping, you can now read either the latest or historical (timestamped) data.
+In addition to having the latest data in the mapping, you can now read the historical (timestamped) data too.
 See more in [`set_data_sgx`](#set_data_sgx) and the [Request Hash guide](./understanding_response.md#about-request-hashes).
