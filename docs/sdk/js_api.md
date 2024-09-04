@@ -356,6 +356,7 @@ how these values are created.
 | `encodedPositions` | [`ProofPositionalInfo`](#type-proofpositionalinfo) | Object containing information about positions of data included in the Attestation Response hash. |
 | `encodedRequest` | `string` | Aleo-encoded request. See the [Guide to understanding encoded request and request hash](../guide/understanding_response.md#about-request-hash). |
 | `requestHash` | `string` | Poseidon8 hash of the `encodedRequest` as Aleo's `u128`. |
+| `timestampedRequestHash` | `string` | Poseidon8 hash of the `requestHash` with the attestation timestamp. |
 
 ### type `PositionInfo`
 
