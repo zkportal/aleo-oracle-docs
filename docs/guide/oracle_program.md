@@ -903,10 +903,10 @@ Here is the source code of the Aleo Oracle in both Leo and compiled to Aleo vers
             public report: Report,
             public sig: signature,
             public pub_key: address,
-            data_position: PositionData,
-            pcr_0_position: PositionData,
-            pcr_1_position: PositionData,
-            pcr_2_position: PositionData
+            public data_position: PositionData,
+            public pcr_0_position: PositionData,
+            public pcr_1_position: PositionData,
+            public pcr_2_position: PositionData
           ) -> Future {
             let hash_blocks: (u128, u128, u128, u128) = select_chunk(report.c8, data_position.block_index);
             let data_hash_from_report: u128 = extract_value(hash_blocks.0, hash_blocks.1, data_position);
@@ -1467,10 +1467,10 @@ Here is the source code of the Aleo Oracle in both Leo and compiled to Aleo vers
             input r1 as Report.public;
             input r2 as signature.public;
             input r3 as address.public;
-            input r4 as PositionData.private;
-            input r5 as PositionData.private;
-            input r6 as PositionData.private;
-            input r7 as PositionData.private;
+            input r4 as PositionData.public;
+            input r5 as PositionData.public;
+            input r6 as PositionData.public;
+            input r7 as PositionData.public;
             call select_chunk r1.c8 r4.block_index into r8 r9 r10 r11;
             call extract_value r8 r9 r4 into r12;
             call verify_nitro_report r0 r1 r2 r3 r12;
