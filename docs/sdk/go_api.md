@@ -340,7 +340,7 @@ Options are optional, will use 5\-second timeout context if options are nil.
 func (c *Client) Notarize(req *AttestationRequest, options *NotarizationOptions) ([]*AttestationResponse, []error)
 ```
 
-Notarize requests attestation of data extracted from the provided URL using the provided selector. Attestation is created by one or more Trusted Execution Environments \(TEE\). If more than one is used, all attestation requests should succeed.
+Notarize requests attestation of data extracted from the provided URL using the provided selector. Attestation is created by one or more Trusted Execution Environments \(TEE\). Returns all successfully produced and verified attestations and discards the invalid ones.
 
 It is highly recommended to use time insensitive historic data for notarization. In case of using live data, other people might see different results when requesting the same url with the same parameters.
 

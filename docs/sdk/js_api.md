@@ -173,11 +173,11 @@ Extends: `Error`
 
 | Return type | Description |
 | --- | --- |
-| <code>Promise<[AttestationResponse](#type-attestationresponse)[]></code> | List of attestation results. Returned only if all enclaves produced successful attestations. |
+| <code>Promise<[AttestationResponse](#type-attestationresponse)[]></code> | List of the attestation results. Returns all successfully produced and verified attestations and discards the invalid ones. |
 
 | Thrown type | Reason |
 | --- | --- |
-| [`AttestationError`](#class-attestationerror) | One of the Notarization Backends failed to perform notarization or attestation. |
+| [`AttestationError`](#class-attestationerror) | All the Notarization Backends failed to perform notarization or attestation. |
 | `Error` | Failed to parse one or more responses. |
 | [Fetch API errors](https://developer.mozilla.org/en-US/docs/Web/API/fetch#exceptions) | Fetch failed. |
 
@@ -190,7 +190,7 @@ Extends: `Error`
 
 | Return type | Description |
 | --- | --- |
-| <code>Promise<[DebugRequestResponse](#type-debugrequestresponse)[]></code> | List of results of notarization and Attestation Data extraction. Returned only if all enclaves produced successful notarizations. |
+| <code>Promise<[DebugRequestResponse](#type-debugrequestresponse)[]></code> | List of results of notarization and Attestation Data extraction. Returns all successfully produced notarizations.
 
 | Thrown type | Reason |
 | --- | --- |
@@ -223,7 +223,7 @@ Extends: `Error`
 
 | Return type | Description |
 | --- | --- |
-| <code>Promise<[AttestationResponse](#type-attestationresponse)[]></code> | List of attestation results. Returned only if all enclaves produced successful attestations. |
+| <code>Promise<[AttestationResponse](#type-attestationresponse)[]></code> | List of the attestation results. Returns all successfully produced and verified attestations and discards the invalid ones. |
 
 | Thrown type | Reason |
 | --- | --- |
