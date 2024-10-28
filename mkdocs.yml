@@ -16,6 +16,7 @@ nav:
     - 'Encoding data for Aleo': 'guide/aleo_encoding.md'
     - 'Submitting data to the Oracle': 'guide/submit_attestation.md'
     - 'Oracle program': 'guide/oracle_program.md'
+    - 'Attested Price Feed': 'guide/attested_price_feed.md'
     - 'Self-hosted verifier': 'guide/hosting_verifier.md'
     - 'Accepted headers': 'guide/accepted_headers.md'
   - SDK:
@@ -44,6 +45,8 @@ theme:
     - toc.follow
     - content.code.copy
     - content.code.annotate
+    - search.suggest
+    - search.highlight
   palette:
     - media: "(prefers-color-scheme: dark)"
       scheme: slate
@@ -62,7 +65,7 @@ theme:
       accent: light blue
 
 extra:
-  version: 1.1.0
+  version: 2.1.0
   variables:
     links:
       oracle_backend_repo:
@@ -82,13 +85,14 @@ extra:
       link: https://github.com/zkportal/aleo-oracle-sdk-go
       name: Aleo Oracle SDK for Go
 
-# copyright: Copyright &copy; 2024 zkPortal
+# copyright: Copyright &copy; 2024 zkPortal. <br> Version 1.3.1
+copyright: Version 2.1.0
 
 plugins:
   - privacy
   - search:
+      lang: en
       pipeline:
-        - stemmer
         - stopWordFilter
         - trimmer
   - markdownextradata

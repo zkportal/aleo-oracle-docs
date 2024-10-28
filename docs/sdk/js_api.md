@@ -40,6 +40,9 @@ an override for Fetch options that are used for communicating with those backend
     - [type `EnclaveInfo`](#type-enclaveinfo)
     - [type `EncodingOptions`](#type-encodingoptions)
     - [type `InfoOptions`](#type-infooptions)
+    - [type `NitroDocument`](#type-nitrodocument)
+    - [type `NitroInfo`](#type-nitroinfo)
+    - [type `NitroReportExtras`](#type-nitroreportextras)
     - [type `NotarizationOptions`](#type-notarizationoptions)
     - [type `OracleData`](#type-oracledata)
     - [type `PositionInfo`](#type-positioninfo)
@@ -310,7 +313,7 @@ Information about the TEE the Notarization Backend is running in.
 | --- | --- | --- |
 | `enclaveUrl` | `string` | URL of the Notarization Backend the report came from. |
 | `reportType` | `string` | Which TEE technology produces the attestation report within this response. |
-| `info` | [`SgxInfo`](#type-sgxinfo) | Information about the TEE. |
+| `info` | <code>[SgxInfo](#type-sgxinfo) \| [NitroInfo](#type-nitroinfo)</code> | Information about the TEE. |
 | `signerPubKey` | `string` | Public key of the report signing key that was generated in the enclave. |
 
 ### type `EncodingOptions`
@@ -332,6 +335,45 @@ Request options for the enclave information request
 | --- | --- | --- |
 | `timeout` | `number | undefined` | Request timeout in ms. If not set, the default timeout for the Fetch API implementation will be used. |
 
+### type `NitroDocument`
+
+| Property | Type | Description |
+| --- | --- | --- |
+| `moduleID` | `string` | Issuing Nitro hypervisor module ID. |
+| `timestamp` | `number` | UTC time when document was created, in milliseconds since UNIX epoch. |
+| `digest` | `string` | The digest function used for calculating the register values. |
+| `pcrs` | `Record<string, string>` | Map of all locked PCRs at the moment the attestation document was generated. All PCR values are 48 bytes long. Will always have keys from "0" to "15". Base64. |
+| `certificate` | `string` | The public key certificate for the public key that was used to sign the attestation document. Base64. |
+| `cabundle` | `string[]` | Issuing CA bundle for infrastructure certificate. Base64. |
+| `userData` | `string` | Additional signed user data. Always zero in a self report. Base64. |
+| `nonce` | `string` | An optional cryptographic nonce provided by the attestation consumer as a proof of authenticity. Base64. |
+
+### type `NitroInfo`
+
+| Property | Type | Description |
+| --- | --- | --- |
+| `document` | [`NitroDocument`](#type-nitrodocument) | Nitro enclave attestation document. |
+| `protectedCose` | `string` | Protected section from the COSE Sign1 payload of the Nitro enclave attestation result. Base64. |
+| `signature` | `string` | Signature section from the COSE Sign1 payload of the Nitro enclave attestation document. Base64. |
+| `aleo` | `{ pcrs: string, userData: string }` | PCRs 0-2 encoded for Aleo as one struct of 9 `u128` fields, 3 chunks per PCR value, and Self report user data (always zero) encoded for Aleo as a `u128` |
+
+??? example "Example value of `aleo.pcrs` property"
+
+    ```json
+    "{ pcr_0_chunk_1: 286008366008963534325731694016530740873u128, pcr_0_chunk_2: 271752792258401609961977483182250439126u128, pcr_0_chunk_3: 298282571074904242111697892033804008655u128, pcr_1_chunk_1: 160074764010604965432569395010350367491u128, pcr_1_chunk_2: 139766717364114533801335576914874403398u128, pcr_1_chunk_3: 227000420934281803670652481542768973666u128, pcr_2_chunk_1: 280126174936401140955388060905840763153u128, pcr_2_chunk_2: 178895560230711037821910043922200523024u128, pcr_2_chunk_3: 219470830009272358382732583518915039407u128 }"
+    ```
+
+### type `NitroReportExtras`
+
+Aleo-encoded structs with information that helps to extract user data and PCR values from the report.
+
+| Property | Type | Description |
+| --- | --- | --- |
+| `pcr0Pos` | `string` | Aleo-encoded struct with information for extracting PCR 0. |
+| `pcr1Pos` | `string` | Aleo-encoded struct with information for extracting PCR 1. |
+| `pcr2Pos` | `string` | Aleo-encoded struct with information for extracting PCR 2. |
+| `userDataPos` | `string` | Aleo-encoded struct with information for extracting additional report user data. |
+
 ### type `NotarizationOptions`
 
 Client options for notarization. See the [Guide to notarization and attestation](../guide/index.md#step-5-requesting-attestation).
@@ -350,13 +392,14 @@ how these values are created.
 | Property | Type | Description |
 | --- | --- | --- |
 | `signature` | `string` | Schnorr signature of a verified Attestation Report as Aleo's `signature`. |
-| `userData` | `string` | Aleo-encoded data that was used to create hash included in the Attestation Report. See the [Guide about Aleo encoding](../guide/understanding_response.md#about-encoding-data-for-aleo). |
+| `userData` | `string` | Aleo-encoded data that was used to create the request hash included in the Attestation Report. See the [Guide about Aleo encoding](../guide/understanding_response.md#about-encoding-data-for-aleo). |
 | `report` | `string` | Aleo-encoded Attestation Report. |
-| `address` | `string` | Public key signature was created against. |
+| `address` | `string` | A public key the signature was created against. |
 | `encodedPositions` | [`ProofPositionalInfo`](#type-proofpositionalinfo) | Object containing information about positions of data included in the Attestation Response hash. |
-| `encodedRequest` | `string` | Aleo-encoded request. See the [Guide to understanding encoded request and request hash](../guide/understanding_response.md#about-request-hash). |
+| `encodedRequest` | `string` | Aleo-encoded request. See the [Guide to understanding encoded request and request hash](../guide/understanding_response.md#about-request-hashes). |
 | `requestHash` | `string` | Poseidon8 hash of the `encodedRequest` as Aleo's `u128`. |
 | `timestampedRequestHash` | `string` | Poseidon8 hash of the `requestHash` with the attestation timestamp. |
+| `reportExtras` | <code>[NitroReportExtras](#type-nitroreportextras) \| undefined</code> | Object containing extra information about the attestation report. If the attestation type is "nitro", it contains Aleo-encoded structs with information that helps to extract user data and PCR values from the report. |
 
 ### type `PositionInfo`
 
@@ -397,9 +440,18 @@ Information about Intel SGX enclave a Notarization Backend is running in. Includ
 | `securityVersion` | `number` | Security version of the enclave. For SGX enclaves, this is the ISVSVN value. |
 | `debug` | `boolean` | If true, the enclave is running in debug mode. |
 | `uniqueId` | `string` | The unique ID for the enclave. For SGX enclaves, this is the MRENCLAVE value. Encoded to Base64. |
-| `aleoUniqueId` | `string[]` | Same as `uniqueId` but encoded for use in Aleo as 2 `u128`s. |
 | `signerId` | `string` | The signer ID for the enclave. For SGX enclaves, this is the MRSIGNER value. Encoded to Base64. |
-| `aleoSignerId` | `string[]` | Same as `signerId` but encoded for use in Aleo as 2 `u128`s. |
 | `productId` | `string` | The Product ID for the enclave - ISVPRODID value. Encoded to Base64. |
-| `aleoProductId` | `string` | Same as ProductID but encoded for use in Aleo as a `u128`. |
 | `tcbStatus` | `number` | The status of the enclave's TCB level. |
+| `aleo` | `{ uniqueId: string, signerId: string, productId: string }` | The Unique ID, Signer ID, and Product ID encoded for Aleo. Unique ID and Signer ID are encoded as structs of two `u128`,
+Product ID is a single `u128`. |
+
+??? example "Example value of `aleo` properties"
+
+    ```json
+    {
+      "uniqueId": "{ chunk_1: 182463194922434241099279556506927504877u128, chunk_2: 195059457426944486782769680982131545140u128 }",
+      "signerId": "{ chunk_1: 153386052680309655679396867527014121204u128, chunk_2: 35972203959719964238382729092704599014u128 }",
+      "productId": "0u128"
+    }
+    ```

@@ -36,7 +36,7 @@ For this example we'll use weather data for Amsterdam and put the precipitation 
 
 ### Whitelist
 
-The notarizer maintains a list of hosts that are allowed to be notarized. You can query the list at `https://sgx.aleooracle.xyz/whitelist`. If you would like to whitelist a host, please contact us.
+The notarizer maintains a list of hosts that are allowed to be notarized. You can query the list at `https://sgx.aleooracle.xyz/whitelist` or `https://nitro.aleooracle.xyz/whitelist`. If you would like to whitelist a host, please contact us.
 
 ??? info "Current whitelist"
 
@@ -44,35 +44,35 @@ The notarizer maintains a list of hosts that are allowed to be notarized. You ca
 
     ```json
     [
-        "google.com",
-        "api-testnet.bybit.com",
-        "verifier.aleooracle.xyz",
-        "api.bitfinex.com",
-        "api.coinbasecloud.net",
-        "api-pub.bitfinex.com",
         "sgx.aleooracle.xyz",
-        "api.international.coinbase.com",
-        "api.bybit.com",
-        "www.kraken.com",
-        "pro-api.coinmarketcap.com",
+        "verifier.aleooracle.xyz",
         "docs.aleooracle.xyz",
-        "api.exchange.coinbase.com",
-        "www.okx.com",
+        "google.com",
+        "pro-api.coinmarketcap.com",
         "data-api.binance.vision",
         "testnet.binance.vision",
-        "www.coinbase.com",
-        "api.kraken.com",
-        "archive-api.open-meteo.com",
-        "public.bybit.com",
-        "api.prime.coinbase.com",
-        "www.bitstamp.net",
-        "www.bitfinex.com",
-        "api.kucoin.com",
-        "www.kucoin.com",
         "api.binance.com",
-        "api-futures.kucoin.com",
+        "archive-api.open-meteo.com",
+        "www.coinbase.com",
+        "api.exchange.coinbase.com",
+        "api.coinbasecloud.net",
+        "api.prime.coinbase.com",
+        "api.international.coinbase.com",
+        "www.kraken.com",
         "iapi.kraken.com",
-        "www.bybit.com"
+        "api.kraken.com",
+        "www.okx.com",
+        "www.bybit.com",
+        "public.bybit.com",
+        "api-testnet.bybit.com",
+        "api.bybit.com",
+        "www.kucoin.com",
+        "api.kucoin.com",
+        "api-futures.kucoin.com",
+        "www.bitfinex.com",
+        "api-pub.bitfinex.com",
+        "api.bitfinex.com",
+        "www.bitstamp.net"
     ]
     ```
 

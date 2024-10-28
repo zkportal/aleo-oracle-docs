@@ -2,10 +2,16 @@
 
 A successful Notarize call will return an Attestation Response, which we will break down here.
 
-??? example "Example weather attestation response formatted as JSON"
+??? example "Example weather attestation response by an SGX enclave formatted as JSON"
 
     ```json
     --8<-- "example_weather_attestation.json"
+    ```
+
+??? example "Example BTC/USDC quote attestation response by a Nitro enclave formatted as JSON"
+
+    ```json
+    --8<-- "example_btc_usdc_attestation_nitro.json"
     ```
 
 For a developer, the most interesting parts of the response will be the Attestation Data and Oracle Data.
@@ -25,9 +31,12 @@ Attestation Request + Attestation results combination will be called Report Data
 
     The report data is called `userData` in the SDK response! See [`OracleData.userData` in JS SDK](../sdk/js_api.md#type-oracledata) and [`OracleData.UserData` in Go SDK](../sdk/go_api.md#type-oracledata).
 
+!!! warning "report"
+    `OracleData.report` is the `attestationReport` but Aleo encoded as it is.
+
 The Aleo program that uses it should be able to hash it and make asserts on certain properties while also taking the least amount of space.
 
-Below is a type that is used in Aleo programs for using Report Data. It's called `ReportData` and it consists of 8 512-byte data chunks.
+Below is a type that is used in Aleo programs for using Report Data. It's called `ReportData` and it consists of eight 512-byte data chunks.
 
 ??? note "Leo definition of `ReportData`"
 
@@ -80,7 +89,7 @@ Below is a type that is used in Aleo programs for using Report Data. It's called
     }
     ```
 
-The backend serializes the Report Data to bytes. It follows a defined order of serializing properties, using a defined serializing method.
+The notarization backend serializes the Report Data to bytes. It follows a defined order of serializing properties, using our own custom serializing method.
 
 Then all useful properties are padded and aligned in a certain way so that they can be encoded into Aleo `u128`s where a property occupies at least one `u128`.
 
@@ -96,7 +105,7 @@ be in `ReportData.c0.f2`.
 
     Depending on encoding options, the Attestation Data can take more than one property
 
-The Oracle supports serializing Attestation Data, in a way that Aleo program could use it, in the following 3 ways:
+The Oracle supports serializing Attestation Data into the Aleo compatible format in the following 3 ways:
 
 - as a string
 - as an integer
@@ -104,9 +113,9 @@ The Oracle supports serializing Attestation Data, in a way that Aleo program cou
 
 ### Attestation Data as a string
 
-To seriailze and encode Attestation Data as a string for Aleo, you set <code>[AttestationRequest](../sdk/js_api.md#type-attestationrequest).[encodingOptions](../sdk/js_api.md#type-encodingoptions).value</code> to `string`.
+To serialize and encode Attestation Data as a string for Aleo, you set <code>[AttestationRequest](../sdk/js_api.md#type-attestationrequest).[encodingOptions](../sdk/js_api.md#type-encodingoptions).value</code> to `string`.
 
-Since Aleo didn't support strings at the moment of development of the SDK, strings are serialized to bytes, split into chunks of 16 bytes,
+Since Aleo does not support strings at the moment of development of the SDK, strings are serialized to bytes, split into chunks of 16 bytes,
 then encoded into one or more 16-byte numbers - Aleo's `u128`.
 
 !!! example "Encoding a string shorter than 16 bytes"
@@ -262,13 +271,13 @@ For the sake of simplicity, the following examples will not use the `ReportData`
 
 ### Attestation Data as an integer
 
-To seriailze and encode Attestation Data for Aleo as an unsigned integer up to 64 bits in size, you set <code>[AttestationRequest](../sdk/js_api.md#type-attestationrequest).[encodingOptions](../sdk/js_api.md#type-encodingoptions).value</code> to `int`.
+To serialize and encode Attestation Data for Aleo as an unsigned integer up to 64 bits in size, you set <code>[AttestationRequest](../sdk/js_api.md#type-attestationrequest).[encodingOptions](../sdk/js_api.md#type-encodingoptions).value</code> to `int`.
 
-When working with numbers, they must be encoded in a way that makes them look the same in an Aleo program and in the Report Data in the SDK.
+Attestation data is a string containing the integer value, which is parsed and encoded as an integer.
 
 To give a more specific example, if the Attestation Data is a number "42", we want our Aleo program to be able to assert it as `ReportData.c0.f2 == 42u128`.
 
-As a developer you don't need to do anything. When backend prepares <code>[AttestationResponse](../sdk/js_api.md#type-attestationresponse).[oracleData](../sdk/js_api.md#type-oracledata).userData</code> that you see in the SDK response, it serializes the number as bytes in little-endian order and pads them to 16. Then the encoder turns those bytes into Aleo's `u128`,
+As a developer you don't need to do anything. When our notarization backend prepares the <code>[AttestationResponse](../sdk/js_api.md#type-attestationresponse).[oracleData](../sdk/js_api.md#type-oracledata).userData</code> that you see in the SDK response, it serializes the number as bytes in little-endian order and pads them to 16. Then the encoder turns those bytes into Aleo's `u128`,
 which produces the same number you have in the SDK response.
 
 !!! example
@@ -305,7 +314,7 @@ which produces the same number you have in the SDK response.
 
 ### AttestationData as a floating point number
 
-To seriailze and encode Attestation Data for Aleo as an unsigned integer up to 64 bits in size, you set <code>[AttestationRequest](../sdk/js_api.md#type-attestationrequest).[encodingOptions](../sdk/js_api.md#type-encodingoptions).value</code> to `int`. This is the only encoding option where you also need to provide desired precision. See the [Guide to encoding options](./index.md#precision).
+To serialize and encode Attestation Data for Aleo as a float up to 64 bits in size, you set <code>[AttestationRequest](../sdk/js_api.md#type-attestationrequest).[encodingOptions](../sdk/js_api.md#type-encodingoptions).value</code> to `float`. This is the only encoding option where you also need to provide desired precision. See the [Guide to encoding options](./index.md#precision).
 
 Not all floats can be encoded to an Aleo-compatible format at the moment.
 
@@ -348,15 +357,16 @@ Let's take a look at our weather example again
 ## About Attestation Report
 
 An Attestation Report is a report document about some data. The document is signed by the TEE enclave, and it contains additional information about the enclave such as
-unique ID, signer ID, security information.
+enclave measurements, signatures, security information, etc.
 
 Verifying the Attestation Report provides assurances that the enclave is running a specific version of source code, with some specific configuration. In case of Intel SGX,
-the Intel corporation acts as a security collateral. They also provide a list of combinations of software and hardware and their security level.
+the Intel corporation acts as a security collateral. They also provide a list of combinations of software and hardware and their security level. In case of Amazon Nitro, Amazon
+acts as a security collateral.
 
 In the SDK's response, the Attestation Report is encoded in the `attestationReport` using Base64 encoding. This report is verified by the verification backend during the SDK's
-Notarize procedure. The verification backend makes assertions on the enclave unique ID during the verification - it uses the reproducibility of the enclave build process to find the expected unique ID.
+`notarize()` procedure. The verification backend makes assertions on the enclave measurements during the verification - it uses the reproducibility of the enclave build process to find the expected enclave measurements and compare them to the ones encoded in the report.
 
-The Attestation Report can include up to 64 bytes of user data. In our case, the data is Aleo's Poseidon8 hash of serialized and formatted Report Data.
+The Attestation Report can include up to 64 bytes of user data. In our case, the data is 16 bytes of Aleo's Poseidon8 hash of serialized and formatted Report Data.
 
 The Attestation Report is an array of bytes that doesn't need serialization but it still needs to be formatted into a type compatible with Aleo.
 
@@ -377,7 +387,11 @@ struct Report {
 }
 ```
 
-The 64 bytes of user data in the Report will be located in `Report.c0.f24`, `Report.c0.f25`, `Report.c0.f26`, and `Report.c0.f27`. The Poseidon8 hash of the user data is
+The SGX and Nitro attestation reports have different structure and encoded content. Below we will take a look at what's inside.
+
+### SGX
+
+The 64 bytes of user data in the Report will be located in `Report.c0.f24`, `Report.c0.f25`, `Report.c0.f26`, and `Report.c0.f27`. The Poseidon8 hash of the Report Data is
 only 16 bytes - one `u128`.
 
 ```leo linenums="1" hl_lines="3 5"
@@ -412,6 +426,139 @@ Here are some more enclave flags and properties you can use:
 See [Open Enclave SDK headers for SGX](https://github.com/openenclave/openenclave/blob/e9a0423e3a0b242bccbe0b5b576e88b640f88f85/include/openenclave/bits/sgx/sgxtypes.h#L1088) for more flags.
 
 See Intel SGX and Open Enclave official documentation for more information.
+
+### Nitro
+
+A Nitro attestation report is not fixed in length, which makes it more complicated to use in Aleo. Since the size is not fixed, the report values we may need to verify in a program may
+not align with the `u128` type. Instead, the value could start in one `u128` and end in the next one.
+
+The notarization backend helps with that by parsing the report for us and providing some helpful information on parsing and extracting the important data.
+
+You will find this information in the <code>[AttestationResponse](../sdk/js_api.md#type-attestationresponse).[oracleData](../sdk/js_api.md#type-oracledata).reportExtras</code> property:
+
+!!! example
+
+    The irrelevant for this example properties were omitted.
+
+    ```json linenums="1" hl_lines="59"
+    [
+        {
+            "oracleData": {
+                "reportExtras": {
+                    "pcr0Pos": "{ block_index: 6u8, shift_a: 64u8, shift_b: 64u8, mask_a: 340282366920938463444927863358058659840u128, mask_b: 18446744073709551615u128 }",
+                    "pcr1Pos": "{ block_index: 9u8, shift_a: 88u8, shift_b: 40u8, mask_a: 340282366920628978453553262363043430400u128, mask_b: 309485009821345068724781055u128 }",
+                    "pcr2Pos": "{ block_index: 12u8, shift_a: 112u8, shift_b: 16u8, mask_a: 340277174624079928635746076935438991360u128, mask_b: 5192296858534827628530496329220095u128 }",
+                    "userDataPos": "{ block_index: 16u8, shift_a: 96u8, shift_b: 32u8, mask_a: 340282366841710300949110269838224261120u128, mask_b: 79228162514264337593543950335u128 }"
+                }
+            }
+        }
+    ]
+    ```
+
+It contains Aleo-encoded structs containing that extraction information for PCRs 0-2 and the Poseidon8 hash of the Report Data.
+
+The Aleo type declaration for those structs looks like this
+
+```leo
+struct PositionData {
+    block_index: u8,
+    shift_a: u8,
+    shift_b: u8,
+    mask_a: u128,
+    mask_b: u128
+}
+```
+
+The struct contains the index of the `u128` where the value begins and bitwise shifts and masks for the two `u128` so that the following operation results in the desired value:
+
+`value = ((a & mask_a) >>> shift_a) | ((b & mask_b) <<< shift_b)`, where `a` is the `u128` at the provided index, and `b` is the value at index `block_index + 1`.
+
+The position data for the PCR and Report Data Hash values must be submitted to the oracle along with the the report data, the report, the signature, and the public key.
+
+**The PCR values will always be in the chunk 0, and the User Data in the chunk 8.**
+
+!!! example "Selecting 16 bytes of Report Data Hash from a Report chunk using PositionData"
+
+    ```leo linenums="1" hl_lines="30"
+    function select_report_data_hash_from_chunk(c: DataChunk, pos: u8) -> (u128, u128) {
+        if pos == 0u8 {
+            return (c.f0, c.f1);
+        }
+        if pos == 1u8 {
+            return (c.f1, c.f2);
+        }
+        // ...
+        if pos == 30u8 {
+            return (c.f30, c.f31);
+        }
+    }
+
+    function extract_value(
+        a: u128,
+        b: u128,
+        position_info: PositionData
+    ) -> u128 {
+        let a_masked: u128 = a & position_info.mask_a;
+        let a_masked_shifted: u128 = a_masked.shr_wrapped(position_info.shift_a);
+
+        let b_masked: u128 = b & position_info.mask_b;
+        let b_masked_shifted: u128 = b_masked.shl_wrapped(position_info.shift_b);
+
+        let result: u128 = a_masked_shifted | b_masked_shifted;
+
+        return result;
+    }
+
+    async transition select_user_data(public report: Report, public data_position: PositionData) -> Future {
+        let report_data_hash_parts: (u128, u128) = select_report_data_hash_from_chunk(report.c8, data_position.block_index);
+
+        let report_data_hash: u128 = extract_value(report_data_hash_parts.0, report_data_hash_parts.1, data_position);
+    }
+    ```
+
+Extracting PCR values is similar but requires more steps. Every PCR value is 48 bytes long, which means that we need to extract three `u128`s. It also means that we need four `u128`s to extract
+three `u128` that could be offset.
+
+!!! example "Selecting 48 bytes of a PCR value from a Report chunk using PositionData"
+
+    ```leo linenums="1" hl_lines="30"
+    function select_pcr_value_from_chunk(c: DataChunk, pos: u8) -> (u128, u128, u128, u128) {
+        if pos == 0u8 {
+            return (c.f0, c.f1, c.f2, c.f3);
+        }
+        if pos == 1u8 {
+            return (c.f1, c.f2, c.f3, c.f4);
+        }
+        // ...
+        if pos == 28u8 {
+            return (c.f28, c.f29, c.f30, c.f31);
+        }
+    }
+
+    function extract_value(
+        a: u128,
+        b: u128,
+        position_info: PositionData
+    ) -> u128 {
+        let a_masked: u128 = a & position_info.mask_a;
+        let a_masked_shifted: u128 = a_masked.shr_wrapped(position_info.shift_a);
+
+        let b_masked: u128 = b & position_info.mask_b;
+        let b_masked_shifted: u128 = b_masked.shl_wrapped(position_info.shift_b);
+
+        let result: u128 = a_masked_shifted | b_masked_shifted;
+
+        return result;
+    }
+
+    async transition select_pcr_value(public report: Report, public pcr0_position: PositionData) -> Future {
+        let pcr_0_block: (u128, u128, u128, u128) = select_pcr_value_from_chunk(report.c0, pcr0_position.block_index);
+
+        let pcr_0_chunk_1: u128 = extract_value(pcr_0_block.0, pcr_0_block.1, pcr0_position);
+        let pcr_0_chunk_2: u128 = extract_value(pcr_0_block.1, pcr_0_block.2, pcr0_position);
+        let pcr_0_chunk_3: u128 = extract_value(pcr_0_block.2, pcr_0_block.3, pcr0_position);
+    }
+    ```
 
 ### Verifying Attestation Report signature
 
@@ -472,7 +619,7 @@ This brings us to a full example of verifying the Attestation Report and Report 
 
 ## About request hashes
 
-The oracle data contains an Encoded Request, an Encoded Request Hash, and a timestamped Encoded Request Hash.
+The oracle data contains an encoded request, its hash and a timestamped hash.
 
 The Encoded Request is the same as the Report Data but
 with the Attestation Data and Attestation Timestamp zeroed out. Attestation Data and Timestamp are the only parts of Report Data that can be different every time you perform notarization. By zeroing out these 2 fields, we can create a constant Report Data, which is going to represent a request to the attestation target.
@@ -481,10 +628,8 @@ with the Attestation Data and Attestation Timestamp zeroed out. Attestation Data
 
 When an Aleo program is going to verify that a request was done using the correct parameters,
 like URL, Request Body, Request Headers etc., it can take the Report Data provided, replace the Attestation Data
-and the Timestamp with `0u128` and then compare the result with the constant `UserData` in the program.
-
-You can also hash it and, for example, compare it with the expected hash to make sure the data comes from attesting the target
-with the desired parameters. When hashed, it's also easier to store in a mapping.
+and the Timestamp with `0u128`, hash it and compare this hash with the expected request hash in the program.
+This way we can be sure that the data comes from the desired source with the correct parameters.
 
 The Encoded Request Hash is created using Aleo's Poseidon8 hash as `u128`.
 
@@ -555,39 +700,33 @@ The Encoded Request Hash is created using Aleo's Poseidon8 hash as `u128`.
     }
     ```
 
-A timestamped Encoded Request Hash combines the Encoded Request Hash with the attestation timestamp to uniquely identify
-a a request done at a certain point of time.
+### Timestamped request hash
 
-!!! example "Using a timetstamped Request Hash"
+A timestamped request hash combines the [request hash](#about-request-hashes) with the attestation timestamp to uniquely identify a request that was done at a certain point in time. In order to calculate this hash, first you need to create a specific Aleo struct called `TimestampedHash` which would combine the request hash of a desired request with the timestamp of attestation which you want to use. And then you can get the Poseidon8 hash of this struct to get the timestamped request hash:
 
-    ```leo linenums="1" hl_lines="12 15 16 19 27"
-    program check_request.aleo {
-        // assume that the hash is stored in key 0u8
-        mapping expected_request_hash: u8 => u128;
+!!! example "Using a timestamped request hash"
+
+    ```leo linenums="1"
+    program timestamped_hash.aleo {
 
         struct TimestampedHash {
             request_hash: u128,
             attestation_timestamp: u128
         }
 
-        async transition check_request(public report_data: ReportData) -> Future {
+        async transition calculate_hash() -> u128 {
             ...
-            let request_hash: u128 = 0u128; // previously computed request hash
 
             let struct_to_hash: TimestampedHash = TimestampedHash {
-              request_hash: request_hash,
-              attestation_timestamp: report_data.c0.f3
+              request_hash: 12345u128, // request hash of a desired request
+              attestation_timestamp: report_data.c0.f3 // position of attestation timestamp in the report data
             };
 
             let timestamped_hash: u128 = Poseidon8::hash_to_u128(struct_to_hash);
 
-            return finalize_check_request(timestamped_hash);
-        }
-
-        async function finalize_check_request(public timestamped_hash: u128) {
-            let expected_request_hash: u128 = Mapping::get(0u8);
-
-            assert_eq(timestamped_hash, expected_request_hash);
+            return timestamped_hash;
         }
     }
     ```
+
+Then you can use the calculated timestamped request hash in order to query data from the oracle mappings. Here is more on [how to query the oracle](./oracle_program.md#how-to-use-the-oracle).
