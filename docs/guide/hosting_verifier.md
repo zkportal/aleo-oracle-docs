@@ -47,7 +47,7 @@ You can also change the config after you build the images, you just need to moun
 
 ## Configuration
 
-The program looks for [`config.json`](./config.json) in the working directory.
+The program looks for `config.json` in the working directory.
 
 | Key | Description | Required |
 | --- | --- | --- |
