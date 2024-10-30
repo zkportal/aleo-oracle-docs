@@ -16,7 +16,7 @@ config := &ClientConfig{
 	VerifierConfig: &CustomBackendConfig{
 		Address: "verifier.aleooracle.xyz",
 		HTTPS:   true,
-		Resolve: false,
+		Resolve: true,
 	},
 	Logger: log.Default(),
 }
@@ -119,11 +119,16 @@ log.Println()
 - [type EncodingOptions](#type-encodingoptions)
 - [type EncodingOptionsValueType](#type-encodingoptionsvaluetype)
 - [type HtmlResultType](#type-htmlresulttype)
+- [type NitroAleoInfo](#type-nitroaleoinfo)
+- [type NitroDocument](#type-nitrodocument)
+- [type NitroInfo](#type-nitroinfo)
+- [type NitroReportExtras](#type-nitroreportextras)
 - [type NotarizationOptions](#type-notarizationoptions)
 - [type OracleData](#type-oracledata)
 - [type PositionInfo](#type-positioninfo)
 - [type ProofPositionalInfo](#type-proofpositionalinfo)
 - [type ResponseFormat](#type-responseformat)
+- [type SgxAleoInfo](#type-sgxaleoinfo)
 - [type SgxInfo](#type-sgxinfo)
 - [type TestSelectorOptions](#type-testselectoroptions)
 - [type TestSelectorResponse](#type-testselectorresponse)
@@ -133,14 +138,15 @@ log.Println()
 
 ```go
 const (
-    // Request timeout used by default for Client's methods
-    DEFAULT_TIMEOUT = 5 * time.Second
+    REPORT_TYPE_SGX   = "sgx"
+    REPORT_TYPE_NITRO = "nitro"
 )
 ```
 
 ```go
 const (
-    REPORT_TYPE_SGX = "sgx"
+    // Request timeout used by default for Client's methods
+    DEFAULT_TIMEOUT = 5 * time.Second
 )
 ```
 
@@ -242,7 +248,7 @@ type AttestationRequest struct {
     // Optional dictionary of HTTP headers to add to the request to attestation target.
     //
     // Value of headers which might contain sensitive information (like "Authorization", "X-Auth-Token" or "Cookie")
-    // and any non-standard headers used by attestation target will be replaced with "*****" in attestation report.
+    // and any non-standard headers used by attestation target would be replaced with "*****" in attestation report.
     //
     // This SDK will use some default request headers like User-Agent. See DEFAULT_NOTARIZATION_HEADERS.
     //
@@ -324,7 +330,7 @@ func (c *Client) GetEnclavesInfo(options *EnclaveInfoOptions) ([]*EnclaveInfo, [
 
 GetEnclavesInfo requests information about the enclaves that the Notarization Backends are running in.
 
-Can be used to get such important information as security level or Enclave Unique ID, which can be used to verify that Notarization Backend is running the expected version of the code.
+Can be used to get such important information as security level or enclave measurements, which can be used to verify that Notarization Backend is running the expected version of the code.
 
 Options are optional, will use 5\-second timeout context if options are nil.
 
@@ -334,7 +340,7 @@ Options are optional, will use 5\-second timeout context if options are nil.
 func (c *Client) Notarize(req *AttestationRequest, options *NotarizationOptions) ([]*AttestationResponse, []error)
 ```
 
-Notarize requests attestation of data extracted from the provided URL using the provided selector. Attestation is created by one or more Trusted Execution Environments \(TEE\). If more than one is used, all attestation requests should succeed.
+Notarize requests attestation of data extracted from the provided URL using the provided selector. Attestation is created by one or more Trusted Execution Environments \(TEE\). Returns all successfully produced and verified attestations and discards the invalid ones.
 
 It is highly recommended to use time insensitive historic data for notarization. In case of using live data, other people might see different results when requesting the same url with the same parameters.
 
@@ -419,10 +425,14 @@ type EnclaveInfo struct {
     // The public key is encoded to Aleo "address" type.
     SignerPubKey string
 
-    // Information about the SGX. Exists only when ReportType is "sgx"
+    // Information about the SGX enclave. Exists only when ReportType is "sgx"
     SgxInfo *SgxInfo
+
+    // Information about the Nitro enclave. Exists only when ReportType is "nitro"
+    NitroInfo *NitroInfo
 }
 ```
+
 ## type EnclaveInfoOptions
 
 GetEnclavesInfo options.
@@ -503,6 +513,86 @@ const (
 )
 ```
 
+## type NitroAleoInfo
+
+```go
+type NitroAleoInfo struct {
+    // PCRs 0-2 encoded for Aleo as one struct of 9 `u128` fields, 3 chunks per PCR value.
+    //
+    // Example:
+    //
+    // "{ pcr_0_chunk_1: 286008366008963534325731694016530740873u128, pcr_0_chunk_2: 271752792258401609961977483182250439126u128, pcr_0_chunk_3: 298282571074904242111697892033804008655u128, pcr_1_chunk_1: 160074764010604965432569395010350367491u128, pcr_1_chunk_2: 139766717364114533801335576914874403398u128, pcr_1_chunk_3: 227000420934281803670652481542768973666u128, pcr_2_chunk_1: 280126174936401140955388060905840763153u128, pcr_2_chunk_2: 178895560230711037821910043922200523024u128, pcr_2_chunk_3: 219470830009272358382732583518915039407u128 }"
+    PCRs string `json:"pcrs"`
+
+    // Self report user data (always zero) encoded for Aleo as a `u128`.
+    //
+    // Example:
+    //
+    // "0u128"
+    UserData string `json:"userData"`
+}
+```
+
+## type NitroDocument
+
+```go
+type NitroDocument struct {
+    // Issuing Nitro hypervisor module ID.
+    ModuleID string `json:"moduleID"`
+
+    // UTC time when document was created, in milliseconds since UNIX epoch.
+    Timestamp int64 `json:"timestamp"`
+
+    // The digest function used for calculating the register values.
+    Digest string `json:"digest"`
+
+    // Map of all locked PCRs at the moment the attestation document was generated.
+    // The PCR keys are 0-15. All PCR values are 48 bytes long. Base64.
+    PCRs map[string]string `json:"pcrs"`
+
+    // The public key certificate for the public key that was used to sign the attestation document. Base64.
+    Certificate string `json:"certificate"`
+
+    // Issuing CA bundle for infrastructure certificate. Base64.
+    CABundle []string `json:"cabundle"`
+
+    // Additional signed user data. Always zero in a self report. Base64.
+    UserData string `json:"userData"`
+
+    // An optional cryptographic nonce provided by the attestation consumer as a proof of authenticity. Base64.
+    Nonce string `json:"nonce"`
+}
+```
+
+## type NitroInfo
+
+```go
+type NitroInfo struct {
+    // Nitro enclave attestation document.
+    Document NitroDocument `json:"document"`
+
+    // Protected section from the COSE Sign1 payload of the Nitro enclave attestation result. Base64.
+    ProtectedCose string `json:"protectedCose"`
+
+    // Signature section from the COSE Sign1 payload of the Nitro enclave attestation document. Base64.
+    Signature string `json:"signature"`
+
+    // Some of the Nitro document values encoded for Aleo.
+    Aleo NitroAleoInfo `json:"aleo"`
+}
+```
+
+## type NitroReportExtras
+
+```go
+type NitroReportExtras struct {
+    Pcr0Pos     string `json:"pcr0Pos"`
+    Pcr1Pos     string `json:"pcr1Pos"`
+    Pcr2Pos     string `json:"pcr2Pos"`
+    UserDataPos string `json:"userDataPos"`
+}
+```
+
 ## type NotarizationOptions
 
 NotarizationOptions contains ptional parameters that you can provide to Notarize method.
@@ -569,7 +659,12 @@ type OracleData struct {
     RequestHash string `json:"requestHash"`
 
     // Poseidon8 hash of the RequestHash with the attestation timestamp. Can be used to verify in an Aleo program that the report was made with the correct request.
-	TimestampedRequestHash string `json:"timestampedRequestHash"`
+    TimestampedRequestHash string `json:"timestampedRequestHash"`
+
+    // Object containing extra information about the attestation report.
+    // If the attestation type is "nitro", it contains Aleo-encoded structs with
+    // information that helps to extract user data and PCR values from the report.
+    ReportExtras *NitroReportExtras `json:"reportExtras"`
 }
 ```
 
@@ -627,21 +722,29 @@ const (
 )
 ```
 
+## type SgxAleoInfo
+
+```go
+type SgxAleoInfo struct {
+    UniqueID  string `json:"uniqueId"`  // Same as UniqueID but encoded for Aleo as 2 uint128
+    SignerID  string `json:"signerId"`  // Same as SignerID but encoded for Aleo as 2 uint128
+    ProductID string `json:"productId"` // Same as ProductID but encoded for Aleo as 1 uint128
+}
+```
+
 ## type SgxInfo
 
 Contains information about an SGX enclave.
 
 ```go
 type SgxInfo struct {
-    SecurityVersion uint      `json:"securityVersion"` // Security version of the enclave. For SGX enclaves, this is the ISVSVN value.
-    Debug           bool      `json:"debug"`           // If true, the report is for a debug enclave.
-    UniqueID        []byte    `json:"uniqueId"`        // The unique ID for the enclave. For SGX enclaves, this is the MRENCLAVE value.
-    AleoUniqueID    [2]string `json:"aleoUniqueId"`    // Same as UniqueID but encoded for Aleo as 2 uint128
-    SignerID        []byte    `json:"signerId"`        // The signer ID for the enclave. For SGX enclaves, this is the MRSIGNER value.
-    AleoSignerID    [2]string `json:"aleoSignerId"`    // Same as SignerID but encoded for Aleo as 2 uint128
-    ProductID       []byte    `json:"productId"`       // The Product ID for the enclave. For SGX enclaves, this is the ISVPRODID value.
-    AleoProductID   string    `json:"aleoProductId"`   // Same as ProductID but encoded for Aleo as 1 uint128
-    TCBStatus       uint      `json:"tcbStatus"`       // The status of the enclave's TCB level.
+    SecurityVersion uint        `json:"securityVersion"` // Security version of the enclave. For SGX enclaves, this is the ISVSVN value.
+    Debug           bool        `json:"debug"`           // If true, the report is for a debug enclave.
+    UniqueID        []byte      `json:"uniqueId"`        // The unique ID for the enclave. For SGX enclaves, this is the MRENCLAVE value.
+    SignerID        []byte      `json:"signerId"`        // The signer ID for the enclave. For SGX enclaves, this is the MRSIGNER value.
+    ProductID       []byte      `json:"productId"`       // The Product ID for the enclave. For SGX enclaves, this is the ISVPRODID value.
+    Aleo            SgxAleoInfo `json:"aleo"`            // Some of the SGX report values encoded for Aleo.
+    TCBStatus       uint        `json:"tcbStatus"`       // The status of the enclave's TCB level.
 }
 ```
 

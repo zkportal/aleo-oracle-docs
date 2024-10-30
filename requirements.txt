@@ -1,4 +1,4 @@
 mkdocs >= 1.5.3
 markupsafe == 2.0.1
-mkdocs-material >= 9.5.10
+mkdocs-material >= 9.5.37
 mkdocs-markdownextradata-plugin >= 0.2.5

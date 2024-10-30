@@ -105,7 +105,7 @@ Return:
 
 ## Get enclave information
 
-Requests information about enclaves that Notarization Backend is running in. Can be used to get such important information, like security level or Enclave Unique ID, which can be used to verify that Notarization Backend is running the expected version of the code.
+Requests information about enclaves that Notarization Backend is running in. Can be used to get such important information, like security level or enclave measurements, which can be used to verify that Notarization Backend is running the expected version of the code.
 
 Arguments:
 

@@ -3,7 +3,7 @@
 In order to have trust in attestation data the oracle contract needs to verify the attestation response and attestation report.
 
 To do that, the response and report must be inputs to the contract in some format that makes it possible to read and make asserts on
-them. For example, an oracle should verify the report's signature, TEE unique ID, make assertions on the attestation URL, status code, etc.
+them. For example, an oracle should verify the report's signature, TEE measurements, make assertions on the attestation URL, status code, etc.
 
 To achieve that, the response and report must be serialized and encoded in a specific way.
 

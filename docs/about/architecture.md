@@ -107,8 +107,7 @@ The results are signed and attested by the TEE enclave.
 
 [Oracle verification backend repository :fontawesome-brands-github:]({{ variables.links.verification_backend_repo }})
 
-An Oracle verification backend receives attested responses and verifies the attestation reports. One of the steps is verifying that the unique ID of the attesting enclave
-matches the expected one. This is done using reproducible builds of the Oracle notarization backend.
+An Oracle verification backend receives attested responses and verifies the attestation reports. One of the steps is verifying that the enclave measurements of the attesting enclave match the expected ones. This is done using reproducible builds of the Oracle notarization backend.
 
 This backend is also capable of decoding Aleo-encoded Report Data, decoding and verifying Aleo-encoded Attestation Reports, e.g. if you want
 to verify someone else's reports/data.
