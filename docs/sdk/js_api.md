@@ -85,6 +85,14 @@ Type: [`CustomBackendConfig[]`](#type-custombackendconfig).
     resolve: true,
     init: DEFAULT_FETCH_OPTIONS,
   },
+  {
+    address: 'nitro.aleooracle.xyz',
+    port: 443,
+    https: true,
+    apiPrefix: '',
+    resolve: true,
+    init: DEFAULT_FETCH_OPTIONS,
+  },
 ]
 ```
 
@@ -256,7 +264,7 @@ Notarization backend's response for an attestation request.
 | --- | --- | --- |
 | `enclaveUrl` | `string` | Url of the Notarization Backend the report came from. |
 | `attestationReport` | `string` | Attestation Report in Base64 encoding, created by the TEE using the extracted data. |
-| `attestationType` | `'sgx'` | Which TEE technology produces the attestation report within this response. |
+| `reportType` | `'sgx'` | Which TEE technology produces the attestation report within this response. |
 | `attestationData` | `string` | Data extracted from the Attestation Target's response using the provided selector. The data is always a string, as seen in the raw HTTP response. See the [Guide about the Attestation Data](../guide/understanding_response.md). |
 | `responseBody` | `string` | Full response body received in the Attestation Target's response. |
 | `responseStatusCode` | `number` | Status code of the Attestation Target's response. |
