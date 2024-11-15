@@ -65,7 +65,7 @@ theme:
       accent: light blue
 
 extra:
-  version: 2.1.1
+  version: 2.1.2
   variables:
     links:
       oracle_backend_repo:
@@ -86,7 +86,7 @@ extra:
       name: Aleo Oracle SDK for Go
 
 # copyright: Copyright &copy; 2024 zkPortal. <br> Version 2.1.1
-copyright: Version 2.1.1
+copyright: Version 2.1.2
 
 plugins:
   - privacy
